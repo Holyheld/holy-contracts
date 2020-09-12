@@ -4,6 +4,8 @@ We are actively working on a mobile-first, DeFi-friendly financial services app.
 
 Our goal is to create the smoothest crypto trading on decentralized exchanges, as well cheapest fiat off/on-ramp with our experimental tokenomics. In the long term, we imagine a neobank that will take the best of both worlds, from traditional finance — existing infrastructure, and DeFi — best profit-maximizing strategies and convenient crypto trading exposure.
 
+Stake and earn HOLY at the https://app.holyheld.com
+
 ## Pre-Launch Phase
 
 The pre-launch phase is the launch of the HOLY token via a liquidity mining program. Early adopters will be able to mine the token while staking other DeFi LP tokens or by providing liquidity. At this stage, HOLY has no monetary value and is worthless. Please do not consider it as an investment opportunity. It focuses on creating strong HOLY liquidity, kickstarting Yield Treasury, and supporting early supporters.
@@ -44,6 +46,14 @@ Your third mining option will be staking popular DeFi LP tokens. To facilitate f
 ## Where is the 10%?
 
 10% of remaining available rewards or 2,400,000 HOLY will be reserved for future mining pools throughout the pre-launch phase. Every other day something exciting and interesting is launched, and we don’t want our community to miss it. That is why when the next exciting token will be launched, we will support it through our liquidity mining program.
+
+## Deployed Contracts
+
+HolyToken - 
+HolyKnight - 
+HolderTVLLock - 
+HolderTimelock -
+HolderVesting - 
 
 ### Attributions
 
