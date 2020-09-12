@@ -12,7 +12,7 @@ Going further, when we will launch the app, HOLY will play a crucial role in the
 
 ## Audits
 
-None. Contributors have given their best efforts to ensure the security of these contracts, but make no guarantees. It is a probability - not just a possibility - that there are bugs. That said, minimal changes were made to the staking/distribution contracts that have seen hundreds of millions flow through them via SNX, YFI, and YFI derivatives. The HolyKnight contract logic is excessively simple as well. We prioritized staked assets' security first and foremost. If you feel uncomfortable with these disclosures, don't stake or hold HOLY.
+None. Contributors have given their best efforts to ensure the security of these contracts, but make no guarantees. It is a probability - not just a possibility - that there are bugs. That said, minimal changes were made to the staking/distribution contracts that have seen hundreds of millions flow through them via SNX, YFI, and YFI derivatives. The [HolyKnight](https://github.com/Holyheld/holy-contracts/blob/master/contracts/HolyKnight.sol) contract logic is excessively simple as well. We prioritized staked assets' security first and foremost. If you feel uncomfortable with these disclosures, don't stake or hold HOLY.
 
 ## Post-Launch Phase
 
@@ -22,7 +22,7 @@ At this point, we will stop our liquidity mining program, and the only way to ea
 
 ## Distribution
 
-There will only ever be 100,000,000 HOLY tokens. [Holy Token] (https://github.com/Holyheld/holy-contracts/blob/master/contracts/HolyToken.sol) contract does not have mint function.
+There will only ever be 100,000,000 HOLY tokens. [Holy Token](https://github.com/Holyheld/holy-contracts/blob/master/contracts/HolyToken.sol) contract does not have mint function.
 
 - 80% of the total supply or 80,000,000 HOLY will be reserved for liquidity mining during the pre-launch phase, and trade mining during the post-launch phase. We explain more about our distribution curve further in the article.
 - 10% of the total supply or 10,000,000 HOLY will be reserved for the Holyheld current and future employees. This reserve will be vested at a 2% per week unlock rate. However, an additional KPI is set in the unlock contract. To have a weekly unlock, Holyheld has to achieve an ATH (All-time high) value of TVL (Total Value Locked) in the HOLY. Weekly snapshot is taken to compare the previous week ATH value of TVL and the current week. If the target is met — then tokens can be unlocked. If the target is not met — no tokens will be unlocked this week. A new attempt will be made the following week. This unique KPI feature is aligned with the long-term development of the service and ensures that the team is incentified to continue working for the benefit of Holyheld consumers.
