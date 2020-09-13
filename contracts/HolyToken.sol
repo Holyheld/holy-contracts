@@ -63,10 +63,10 @@ contract HolyToken is ERC20("HolyToken", "HOLY"), Ownable {
 	    mainSupply = address(new HolderTimelock(this, founder, block.timestamp + MAIN_SUPPLY_VESTING_PERIOD));
 
         // TVL metric based vesting
-	    growthvestedSupply = address(new HolderTVLLock(this, founder, block.timestamp + 5 minutes));
+	    growthVestedSupply = address(new HolderTVLLock(this, founder, block.timestamp + 5 minutes));
 
         // Standard vesting
-	    timevestedSupply = address(new HolderVesting(founder, block.timestamp, 60, 365 days, false));
+	    timeVestedSupply = address(new HolderVesting(founder, block.timestamp, 60, 365 days, false));
 
         // HOLY token distribution though liquidity mining
 	    poolSupply = address(new HolyKnight(this, founder, treasury, DISTRIBUTION_SUPPLY, DISTRIBUTION_RESERVE_PERCENT, START_LP_BLOCK, END_LP_BLOCK));
