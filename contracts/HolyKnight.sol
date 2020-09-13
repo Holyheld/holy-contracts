@@ -13,6 +13,9 @@ import "./HolyToken.sol";
 
 // HolyKnight is using LP to distribute Holyheld token
 //
+// it does not mint any HOLY tokens, they must be present on the
+// contract's token balance. Balance is not intended to be refillable.
+//
 // Note that it's ownable and the owner wields tremendous power. The ownership
 // will be transferred to a governance smart contract once HOLY is sufficiently
 // distributed and the community can show to govern itself.
@@ -53,34 +56,71 @@ contract HolyKnight is Ownable {
     HolyToken public holytoken;
     // Dev address.
     address public devaddr;
+    // Treasury address
+    address public treasuryaddr;
+
+    // The block number when HOLY mining starts.
+    uint256 public startBlock;
+    // The block number when HOLY mining targeted to end (if full allocation).
+    uint256 public targetEndBlock;
+
+    // Total amount of tokens to distribute
+    uint256 public totalSupply;
+    // Reserved amount of tokens (to add more pool gradually)
+    uint256 public reservedSupply;
+
     // HOLY tokens created per block.
     uint256 public holyPerBlock;
 
     // Info of each pool.
     PoolInfo[] public poolInfo;
-    // Info of each user that stakes LP tokens.
-    mapping (uint256 => mapping (address => UserInfo)) public userInfo;
     // Total allocation poitns. Must be the sum of all allocation points in all pools.
     uint256 public totalAllocPoint = 0;
-    // The block number when HOLY mining starts.
-    uint256 public startBlock;
+    
+    // Info of each user that stakes LP tokens.
+    mapping (uint256 => mapping (address => UserInfo)) public userInfo;
+    // Info of total amount of staked LP tokens by all users
+    mapping (address => uint256) public totalStaked;
+
+
 
     event Deposit(address indexed user, uint256 indexed pid, uint256 amount);
     event Withdraw(address indexed user, uint256 indexed pid, uint256 amount);
     event EmergencyWithdraw(address indexed user, uint256 indexed pid, uint256 amount);
+    event Treasury(address indexed token, address treasury, uint256 amount);
 
     constructor(
         HolyToken _token,
         address _devaddr,
-        uint256 _tokenPerBlock,
-        uint256 _startBlock
+        address _treasuryaddr,
+        uint256 _totalsupply,
+        uint256 _startreserve,
+        uint256 _startBlock,
+        uint256 _targetEndBlock
     ) public {
         holytoken = _token;
+
         devaddr = _devaddr;
+        treasuryaddr = _treasuryaddr;
+
         //as knight is deployed by Holyheld token, transfer ownership to dev
         transferOwnership(_devaddr);
-        holyPerBlock = _tokenPerBlock;
+
+        totalSupply = _totalsupply;
+        reservedSupply = _startreserve;
+
         startBlock = _startBlock;
+        targetEndBlock = _targetEndBlock;
+    }
+
+    function setReserve(uint256 _reserveAmount) public onlyOwner {
+        reservedSupply = _reserveAmount;
+        updateHolyPerBlock();
+    }
+
+    function updateHolyPerBlock() internal {
+        holyPerBlock = totalSupply.sub(reservedSupply).div(targetEndBlock.sub(startBlock));
+        massUpdatePools();
     }
 
     function poolLength() external view returns (uint256) {
@@ -164,6 +204,7 @@ contract HolyKnight is Ownable {
         pool.lpToken.safeTransferFrom(address(msg.sender), address(this), _amount);
         user.amount = user.amount.add(_amount);
         user.rewardDebt = user.amount.mul(pool.accHolyPerShare).div(1e12);
+        totalStaked[address(pool.lpToken)] = totalStaked[address(pool.lpToken)].add(_amount);
         emit Deposit(msg.sender, _pid, _amount);
     }
 
@@ -178,15 +219,17 @@ contract HolyKnight is Ownable {
         user.amount = user.amount.sub(_amount);
         user.rewardDebt = user.amount.mul(pool.accHolyPerShare).div(1e12);
         pool.lpToken.safeTransfer(address(msg.sender), _amount);
+        totalStaked[address(pool.lpToken)] = totalStaked[address(pool.lpToken)].sub(_amount);
         emit Withdraw(msg.sender, _pid, _amount);
     }
 
-    // Withdraw without caring about rewards. EMERGENCY ONLY.
+    // Withdraw LP tokens without caring about rewards. EMERGENCY ONLY.
     function emergencyWithdraw(uint256 _pid) public {
         PoolInfo storage pool = poolInfo[_pid];
         UserInfo storage user = userInfo[_pid][msg.sender];
         pool.lpToken.safeTransfer(address(msg.sender), user.amount);
         emit EmergencyWithdraw(msg.sender, _pid, user.amount);
+        totalStaked[address(pool.lpToken)] = totalStaked[address(pool.lpToken)].sub(user.amount);
         user.amount = 0;
         user.rewardDebt = 0;
     }
@@ -203,7 +246,30 @@ contract HolyKnight is Ownable {
 
     // Update dev address by the previous dev.
     function dev(address _devaddr) public {
-        require(msg.sender == devaddr, "dev: wut?");
+        require(msg.sender == devaddr, "forbidden");
         devaddr = _devaddr;
+    }
+
+    // Update treasury address by the previous treasury.
+    function treasury(address _treasuryaddr) public {
+        require(msg.sender == treasuryaddr, "forbidden");
+        treasuryaddr = _treasuryaddr;
+    }
+
+    // Send yield on an LP token to the treasury
+    function putToTreasury(address token) public onlyOwner {
+        uint256 availablebalance = IERC20(token).balanceOf(address(this)) - totalStaked[token];
+        require(availablebalance > 0, "not enough tokens");
+        putToTreasuryAmount(token, availablebalance);
+    }
+
+    // Send yield amount realized from holding LP tokens to the treasury
+    function putToTreasuryAmount(address token, uint256 _amount) public onlyOwner {
+        uint256 userbalances = totalStaked[token];
+        uint256 lptokenbalance = IERC20(token).balanceOf(address(this));
+        require(token != address(holytoken), "cannot transfer holy tokens");
+        require(_amount < lptokenbalance - userbalances, "not enough tokens");
+        IERC20(token).safeTransfer(treasuryaddr, _amount);
+        emit Treasury(token, treasuryaddr, _amount);
     }
 }
