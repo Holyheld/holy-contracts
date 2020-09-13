@@ -22,8 +22,8 @@ contract HolderTVLLock is Ownable {
     using SafeMath for uint256;
     using SafeERC20 for IERC20;
 
-    uint256 constant _releasedPercent = 2;
-    uint256 constant _releaseInterval = 1 weeks;
+    uint256 private constant RELEASE_PERCENT = 2;
+    uint256 private constant RELEASE_INTERVAL = 1 weeks;
 
     // ERC20 basic token contract being held
     IERC20 private _token;
@@ -47,7 +47,7 @@ contract HolderTVLLock is Ownable {
 
     constructor (IERC20 token, address beneficiary, uint256 firstReleaseTime) public {
         // solhint-disable-next-line not-rely-on-time
-        require(firstReleaseTime > block.timestamp, "HolderTVLLock: release time is before current time");
+        require(firstReleaseTime > block.timestamp, "release time before current time");
         _token = token;
         _beneficiary = beneficiary;
         _firstReleaseTime = firstReleaseTime;
@@ -88,16 +88,16 @@ contract HolderTVLLock is Ownable {
      */
     function release(uint256 _newTVL) public onlyOwner {
         // solhint-disable-next-line not-rely-on-time
-        require(block.timestamp >= _firstReleaseTime, "HolderTVLLock: current time is before release time");
-        require(block.timestamp < _lastReleaseTime + _releaseInterval, "HolderTVLLock: release interval is not passed");
-        require(_newTVL > _lastReleaseTVL, "HolderTVLLock: release can only be made if TVL is higher");
+        require(block.timestamp >= _firstReleaseTime, "current time before release time");
+        require(block.timestamp < _lastReleaseTime + RELEASE_INTERVAL, "release interval is not passed");
+        require(_newTVL > _lastReleaseTVL, "only release if TVL is higher");
 
         // calculate amount that is possible to release
         uint256 balance = _token.balanceOf(address(this));
         uint256 totalBalance = balance.add(_released);
 
-        uint256 amount = totalBalance.mul(_releasedPercent).div(100);
-        require(amount > balance, "HolderTVLLock: available balance depleted");
+        uint256 amount = totalBalance.mul(RELEASE_PERCENT).div(100);
+        require(amount > balance, "available balance depleted");
 
         _token.safeTransfer(_beneficiary, amount);
 	    _lastReleaseTime = block.timestamp;

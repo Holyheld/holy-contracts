@@ -11,7 +11,8 @@ contract HolderTimelock is TokenTimelock {
     address _beneficiary,
     uint256 _releaseTime
   )
-    TokenTimelock(_token, _beneficiary, _releaseTime)
     public
+    TokenTimelock(_token, _beneficiary, _releaseTime)
+  //solhint-disable-next-line
   {}
 }

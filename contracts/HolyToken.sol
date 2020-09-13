@@ -23,19 +23,19 @@ contract HolyToken is ERC20("HolyToken", "HOLY"), Ownable {
 
     // weekly vested supply, reclaimable by 2% in a week by founder (WeeklyVested contract)
     // 9 mln
-    address public timevested_supply;
+    address public timeVestedSupply;
 
     // TVL-growth vested supply, reclaimable by 2% in a week if TVL is a new ATH (TVLVested contract)
     // 10 mln
-    address public growthvested_supply;
+    address public growthVestedSupply;
 
     // main supply, locked for 4 months (TimeVested contract)
     // 56 mln
-    address public main_supply;
+    address public mainSupply;
     
     // Pool supply (ruled by HolyKnight contract)
     // 24 mln
-    address public pool_supply;
+    address public poolSupply;
 
     uint public constant AMOUNT_FOUNDER = 1000000 * 1e18;
     uint public constant AMOUNT_TIMEVESTED = 9000000 * 1e18;
@@ -60,22 +60,22 @@ contract HolyToken is ERC20("HolyToken", "HOLY"), Ownable {
         treasury = _treasuryaddr; //treasury address is created beforehand
 
         // Timelock contract will hold main supply for 4 months till Jan 2021
-	    main_supply = address(new HolderTimelock(this, founder, block.timestamp + MAIN_SUPPLY_VESTING_PERIOD));
+	    mainSupply = address(new HolderTimelock(this, founder, block.timestamp + MAIN_SUPPLY_VESTING_PERIOD));
 
         // TVL metric based vesting
-	    growthvested_supply = address(new HolderTVLLock(this, founder, block.timestamp + 5 minutes));
+	    growthvestedSupply = address(new HolderTVLLock(this, founder, block.timestamp + 5 minutes));
 
         // Standard vesting
-	    timevested_supply = address(new HolderVesting(founder, block.timestamp, 60, 365 days, false));
+	    timevestedSupply = address(new HolderVesting(founder, block.timestamp, 60, 365 days, false));
 
         // HOLY token distribution though liquidity mining
-	    pool_supply = address(new HolyKnight(this, founder, treasury, DISTRIBUTION_SUPPLY, DISTRIBUTION_RESERVE_PERCENT, START_LP_BLOCK, END_LP_BLOCK));
+	    poolSupply = address(new HolyKnight(this, founder, treasury, DISTRIBUTION_SUPPLY, DISTRIBUTION_RESERVE_PERCENT, START_LP_BLOCK, END_LP_BLOCK));
 
         //allocate tokens to addresses upon creation, no further minting possible
 	    _mint(founder, AMOUNT_FOUNDER);
-	    _mint(timevested_supply, AMOUNT_TIMEVESTED);
-	    _mint(growthvested_supply, AMOUNT_GROWTHVESTED);
-	    _mint(pool_supply, DISTRIBUTION_SUPPLY);
-	    _mint(main_supply, MAIN_SUPPLY); 
+	    _mint(timeVestedSupply, AMOUNT_TIMEVESTED);
+	    _mint(growthVestedSupply, AMOUNT_GROWTHVESTED);
+	    _mint(poolSupply, DISTRIBUTION_SUPPLY);
+	    _mint(mainSupply, MAIN_SUPPLY); 
     }
 }
