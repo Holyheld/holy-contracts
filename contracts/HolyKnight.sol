@@ -8,6 +8,7 @@ import "@openzeppelin/contracts/token/ERC20/SafeERC20.sol";
 import "@openzeppelin/contracts/utils/EnumerableSet.sol";
 import "@openzeppelin/contracts/math/SafeMath.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
+import "./interfaces/Stakeable.sol";
 import "./HolyToken.sol";
 
 
@@ -42,14 +43,18 @@ contract HolyKnight is Ownable {
         //   4. User's `rewardDebt` gets updated.
         // Thus every change in pool or allocation will result in recalculation of values
         // (otherwise distribution remains constant btwn blocks and will be properly calculated)
+        uint256 stakedLPAmount;
     }
 
     // Info of each pool.
     struct PoolInfo {
-        IERC20 lpToken;           // Address of LP token contract.
-        uint256 allocPoint;       // How many allocation points assigned to this pool. HOLYs to distribute per block.
-        uint256 lastRewardCalcBlock;  // Last block number that HOLYs distribution occurs.
-        uint256 accHolyPerShare; // Accumulated HOLYs per share, times 1e12. See below.
+        IERC20 lpToken;              // Address of LP token contract
+        uint256 allocPoint;          // How many allocation points assigned to this pool. HOLYs to distribute per block
+        uint256 lastRewardCalcBlock; // Last block number for which HOLYs distribution is already calculated for the pool
+        uint256 accHolyPerShare;     // Accumulated HOLYs per share, times 1e12. See below
+        bool    stakeable;         // we should call deposit method on the LP tokens provided (used for e.g. vault staking)
+        address stakeableContract;     // location where to deposit LP tokens if pool is stakeable
+        IERC20  stakedHoldableToken;
     }
 
     // The Holyheld token
@@ -134,7 +139,7 @@ contract HolyKnight is Ownable {
 
     // Add a new lp to the pool. Can only be called by the owner.
     // XXX DO NOT add the same LP token more than once. Rewards will be messed up if you do.
-    function add(uint256 _allocPoint, IERC20 _lpToken, bool _withUpdate) public onlyOwner {
+    function add(uint256 _allocPoint, IERC20 _lpToken, bool _stakeable, address _stakeableContract, IERC20 _stakedHoldableToken, bool _withUpdate) public onlyOwner {
         if (_withUpdate) {
             massUpdatePools();
         }
@@ -144,7 +149,10 @@ contract HolyKnight is Ownable {
             lpToken: _lpToken,
             allocPoint: _allocPoint,
             lastRewardCalcBlock: lastRewardCalcBlock,
-            accHolyPerShare: 0
+            accHolyPerShare: 0,
+            stakeable: _stakeable,
+            stakeableContract: _stakeableContract,
+            stakedHoldableToken: IERC20(_stakedHoldableToken)
         }));
     }
 
@@ -204,12 +212,22 @@ contract HolyKnight is Ownable {
         updatePool(_pid);
         if (user.amount > 0) {
             uint256 pending = user.amount.mul(pool.accHolyPerShare).div(1e12).sub(user.rewardDebt);
-            safeTokenTransfer(msg.sender, pending);
+            safeTokenTransfer(msg.sender, pending); //pay the earned tokens when user deposits
         }
         pool.lpToken.safeTransferFrom(address(msg.sender), address(this), _amount);
         user.amount = user.amount.add(_amount);
         user.rewardDebt = user.amount.mul(pool.accHolyPerShare).div(1e12);
         totalStaked[address(pool.lpToken)] = totalStaked[address(pool.lpToken)].add(_amount);
+
+        if (pool.stakeable) {
+            uint256 prevbalance = pool.stakedHoldableToken.balanceOf(address(this));
+            Stakeable(pool.stakeableContract).deposit(_amount);
+            uint256 balancetoadd = pool.stakedHoldableToken.balanceOf(address(this)).sub(prevbalance);
+            user.stakedLPAmount = user.stakedLPAmount.add(balancetoadd);
+            //protect received tokens too from moving to treasury
+            totalStaked[address(pool.stakedHoldableToken)] = totalStaked[address(pool.stakedHoldableToken)].add(balancetoadd);
+        }
+
         emit Deposit(msg.sender, _pid, _amount);
     }
 
@@ -217,14 +235,27 @@ contract HolyKnight is Ownable {
     function withdraw(uint256 _pid, uint256 _amount) public {
         PoolInfo storage pool = poolInfo[_pid];
         UserInfo storage user = userInfo[_pid][msg.sender];
-        require(user.amount >= _amount, "withdraw: not good");
         updatePool(_pid);
+
         uint256 pending = user.amount.mul(pool.accHolyPerShare).div(1e12).sub(user.rewardDebt);
         safeTokenTransfer(msg.sender, pending);
-        user.amount = user.amount.sub(_amount);
-        user.rewardDebt = user.amount.mul(pool.accHolyPerShare).div(1e12);
-        pool.lpToken.safeTransfer(address(msg.sender), _amount);
-        totalStaked[address(pool.lpToken)] = totalStaked[address(pool.lpToken)].sub(_amount);
+        
+        if (pool.stakeable) {
+            //reclaim back original LP tokens and withdraw all of them, regardless of amount
+            Stakeable(pool.stakeableContract).withdraw(user.stakedLPAmount);
+            totalStaked[address(pool.stakedHoldableToken)] = totalStaked[address(pool.stakedHoldableToken)].sub(user.stakedLPAmount);
+            user.stakedLPAmount = 0;
+            pool.lpToken.safeTransfer(address(msg.sender), user.amount);
+            totalStaked[address(pool.lpToken)] = totalStaked[address(pool.lpToken)].sub(user.amount);
+            user.amount = 0;
+        } else {
+            require(user.amount >= _amount, "withdraw: not good");
+            pool.lpToken.safeTransfer(address(msg.sender), _amount);
+            totalStaked[address(pool.lpToken)] = totalStaked[address(pool.lpToken)].sub(_amount);
+            user.amount = user.amount.sub(_amount);
+            user.rewardDebt = user.amount.mul(pool.accHolyPerShare).div(1e12);
+        }
+        
         emit Withdraw(msg.sender, _pid, _amount);
     }
 
@@ -232,6 +263,14 @@ contract HolyKnight is Ownable {
     function emergencyWithdraw(uint256 _pid) public {
         PoolInfo storage pool = poolInfo[_pid];
         UserInfo storage user = userInfo[_pid][msg.sender];
+
+        if (pool.stakeable) {
+            //reclaim back original LP tokens and withdraw all of them, regardless of amount
+            Stakeable(pool.stakeableContract).withdraw(user.stakedLPAmount);
+            totalStaked[address(pool.stakedHoldableToken)] = totalStaked[address(pool.stakedHoldableToken)].sub(user.stakedLPAmount);
+            user.stakedLPAmount = 0;
+        }
+
         pool.lpToken.safeTransfer(address(msg.sender), user.amount);
         emit EmergencyWithdraw(msg.sender, _pid, user.amount);
         totalStaked[address(pool.lpToken)] = totalStaked[address(pool.lpToken)].sub(user.amount);
