@@ -110,6 +110,9 @@ contract HolyKnight is Ownable {
 
         startBlock = _startBlock;
         targetEndBlock = _targetEndBlock;
+
+        //calculate initial token number per block
+        updateHolyPerBlock();
     }
 
     // Reserve some percentage of HOLY token distribution
