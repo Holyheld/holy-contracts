@@ -27,8 +27,11 @@ At this point, we will stop our liquidity mining program, and the only way to ea
 There will only ever be 100,000,000 HOLY tokens. [Holy Token](https://github.com/Holyheld/holy-contracts/blob/master/contracts/HolyToken.sol) contract does not have mint function.
 
 - 80% of the total supply or 80,000,000 HOLY will be reserved for liquidity mining during the pre-launch phase, and trade mining during the post-launch phase. We explain more about our distribution curve further in the article.
+
 - 10% of the total supply or 10,000,000 HOLY will be reserved for the Holyheld current and future employees. This reserve will be vested at a 2% per week unlock rate. However, an additional KPI is set in the unlock contract. To have a weekly unlock, Holyheld has to achieve an ATH (All-time high) value of TVL (Total Value Locked) in the HOLY. Weekly snapshot is taken to compare the previous week ATH value of TVL and the current week. If the target is met — then tokens can be unlocked. If the target is not met — no tokens will be unlocked this week. A new attempt will be made the following week. This unique KPI feature is aligned with the long-term development of the service and ensures that the team is incentified to continue working for the benefit of Holyheld consumers.
+
 - 9% of the total supply or 9,000,000 HOLY will be reserved for operational and marketing expenses. This reserve will also be vested at a 2% per week unlock rate. Supporting the transparency spirit of DeFi, we will announce all major operational costs in advance.
+
 - 1% of the total supply or 1,000,000 HOLY will be reserved for the initial liquidity pool on Balancer (98/2) HOLY-ETH. The team will self-fund the initial liquidity pool to support the smooth launch of HOLY. This reserve will also be vested at a 4% per week unlock rate.
 
 ## Provide liquidity on Balancer
@@ -37,7 +40,7 @@ Your first mining option will be a (98/2) HOLY-ETH Balancer pool. To get HOLY re
 
 ## Stake yCRV tokens
 
-Your second mining option will be staking [yCRV](https://uniswap.info/token/0xdf5e0e81dff6faf3a7e52ba697820c5e32d806a8) tokens. To get HOLY rewards, one will have to stake obtained yCRV tokens. This pool will generate 40% of available rewards or 9,600,000 HOLY. This option is launched because yUSD is the most credible stablecoin farming with very high APY. It’s also hard to farm, as one needs to have other stablecoins first. Since all accumulated during the pre-launch phase yield will be used solely to buyback the tokens and facilitate service fees, the proposal suggests this pool having the biggest rewards.
+Your second mining option will be staking [yCRV](https://uniswap.info/token/0xdf5e0e81dff6faf3a7e52ba697820c5e32d806a8) tokens. To get HOLY rewards, one will have to stake obtained yCRV tokens. This pool will generate 40% of available rewards or 9,600,000 HOLY. This option is launched because yUSD is the most credible stablecoin farming with very high APY. It’s also hard to farm, as one needs to have other stablecoins first. To generate interest, Holyheld will auto-stake yCRV  in the yCRV vault, to obtain yyCRV LP tokens. Since all accumulated during the pre-launch phase yield will be used solely to buyback the tokens and facilitate service fees, the proposal suggests this pool having the biggest rewards.
 
 ## Stake popular DeFi LP tokens
 
@@ -49,13 +52,17 @@ Your third mining option will be staking popular DeFi LP tokens. To facilitate f
 
 ## Deployed Contracts
 
-HolyToken - 
-HolyKnight - 
-HolderTVLLock - 
-HolderTimelock -
-HolderVesting - 
+- HolyToken - 
 
-### Attributions
+- HolyKnight - 
+
+- HolderTVLLock - 
+
+- HolderTimelock -
+
+- HolderVesting - 
+
+## Attributions
 
 Much of this codebase is modified from existing works, including:
 
