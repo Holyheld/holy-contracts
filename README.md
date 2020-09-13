@@ -35,9 +35,9 @@ There will only ever be 100,000,000 HOLY tokens. [Holy Token](https://github.com
 
 Your first mining option will be a (98/2) HOLY-ETH Balancer pool. To get HOLY rewards, one will have to provide liquidity to the Balancer pool, and stake obtained BPT tokens. This pool will generate 20% of available rewards or 4,800,000 HOLY. This pool is launched to ensure the sustainable and smooth growth of the Holyheld ecosystem before and post product launch.
 
-## Stake yyCRV LP tokens
+## Stake yCRV tokens
 
-Your second mining option will be staking [yyCRV LP](https://uniswap.info/token/0x5dbcf33d8c2e976c6b560249878e6f1491bca25c) tokens. To get HOLY rewards, one will have to deposit yCRV into the yVault you receive yyCRV LP tokens, and later stake obtained yyCRV LP tokens. This pool will generate 40% of available rewards or 9,600,000 HOLY. This option is launched because yUSD is the most credible stablecoin farming with very high APY. It’s also hard to farm, as one needs to have yCRV first. Since all accumulated during the pre-launch phase yield will be used solely to buyback the tokens and facilitate service fees, the proposal suggests this pool having the biggest rewards.
+Your second mining option will be staking [yCRV](https://uniswap.info/token/0xdf5e0e81dff6faf3a7e52ba697820c5e32d806a8) tokens. To get HOLY rewards, one will have to stake obtained yCRV tokens. This pool will generate 40% of available rewards or 9,600,000 HOLY. This option is launched because yUSD is the most credible stablecoin farming with very high APY. It’s also hard to farm, as one needs to have other stablecoins first. Since all accumulated during the pre-launch phase yield will be used solely to buyback the tokens and facilitate service fees, the proposal suggests this pool having the biggest rewards.
 
 ## Stake popular DeFi LP tokens
 
