@@ -40,12 +40,11 @@ contract HolyToken is ERC20("HolyToken", "HOLY"), Ownable {
     uint public constant AMOUNT_FOUNDER = 1000000 * 1e18;
     uint public constant AMOUNT_TIMEVESTED = 9000000 * 1e18;
     uint public constant AMOUNT_GROWTHVESTED = 10000000 * 1e18;
-    uint public constant POOL_SUPPLY = 24000000 * 1e18;
-    uint public constant POOL_RESERVE = 2400000 * 1e18;
+    uint public constant DISTRIBUTION_SUPPLY = 24000000 * 1e18;
+    uint public constant DISTRIBUTION_RESERVE_PERCENT = 10;
     uint public constant MAIN_SUPPLY = 56000000 * 1e18;
 
-
-    uint public constant MAIN_SUPPLY_PERIOD = 127 days;
+    uint public constant MAIN_SUPPLY_VESTING_PERIOD = 127 days;
 
     // parameters for HolyKnight construction
     uint public constant START_LP_BLOCK = 0;
@@ -61,7 +60,7 @@ contract HolyToken is ERC20("HolyToken", "HOLY"), Ownable {
         treasury = _treasuryaddr; //treasury address is created beforehand
 
         // Timelock contract will hold main supply for 4 months till Jan 2021
-	    main_supply = address(new HolderTimelock(this, founder, block.timestamp + MAIN_SUPPLY_PERIOD));
+	    main_supply = address(new HolderTimelock(this, founder, block.timestamp + MAIN_SUPPLY_VESTING_PERIOD));
 
         // TVL metric based vesting
 	    growthvested_supply = address(new HolderTVLLock(this, founder, block.timestamp + 5 minutes));
@@ -70,13 +69,13 @@ contract HolyToken is ERC20("HolyToken", "HOLY"), Ownable {
 	    timevested_supply = address(new HolderVesting(founder, block.timestamp, 60, 365 days, false));
 
         // HOLY token distribution though liquidity mining
-	    pool_supply = address(new HolyKnight(this, founder, treasury, POOL_SUPPLY, POOL_RESERVE, START_LP_BLOCK, END_LP_BLOCK));
+	    pool_supply = address(new HolyKnight(this, founder, treasury, DISTRIBUTION_SUPPLY, DISTRIBUTION_RESERVE_PERCENT, START_LP_BLOCK, END_LP_BLOCK));
 
         //allocate tokens to addresses upon creation, no further minting possible
 	    _mint(founder, AMOUNT_FOUNDER);
 	    _mint(timevested_supply, AMOUNT_TIMEVESTED);
 	    _mint(growthvested_supply, AMOUNT_GROWTHVESTED);
-	    _mint(pool_supply, POOL_SUPPLY);
+	    _mint(pool_supply, DISTRIBUTION_SUPPLY);
 	    _mint(main_supply, MAIN_SUPPLY); 
     }
 }

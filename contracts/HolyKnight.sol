@@ -66,15 +66,14 @@ contract HolyKnight is Ownable {
 
     // Total amount of tokens to distribute
     uint256 public totalSupply;
-    // Reserved amount of tokens (to add more pool gradually)
-    uint256 public reservedSupply;
-
-    // HOLY tokens created per block.
+    // Reserved percent of HOLY tokens for current distribution (when pool allocation is not full)
+    uint256 public reservedPercent;
+    // HOLY tokens created per block, calculatable through updateHolyPerBlock().
     uint256 public holyPerBlock;
 
     // Info of each pool.
     PoolInfo[] public poolInfo;
-    // Total allocation poitns. Must be the sum of all allocation points in all pools.
+    // Total allocation points. Must be the sum of all allocation points in all pools.
     uint256 public totalAllocPoint = 0;
     
     // Info of each user that stakes LP tokens.
@@ -94,7 +93,7 @@ contract HolyKnight is Ownable {
         address _devaddr,
         address _treasuryaddr,
         uint256 _totalsupply,
-        uint256 _startreserve,
+        uint256 _reservedPercent,
         uint256 _startBlock,
         uint256 _targetEndBlock
     ) public {
@@ -107,19 +106,22 @@ contract HolyKnight is Ownable {
         transferOwnership(_devaddr);
 
         totalSupply = _totalsupply;
-        reservedSupply = _startreserve;
+        reservedPercent = _reservedPercent;
 
         startBlock = _startBlock;
         targetEndBlock = _targetEndBlock;
     }
 
-    function setReserve(uint256 _reserveAmount) public onlyOwner {
-        reservedSupply = _reserveAmount;
+    // Reserve some percentage of HOLY token distribution
+    // (e.g. initially, 10% of tokens are reserved for future pools to be added)
+    function setReserve(uint256 _reservedPercent) public onlyOwner {
+        reservedPercent = _reservedPercent;
         updateHolyPerBlock();
     }
 
     function updateHolyPerBlock() internal {
-        holyPerBlock = totalSupply.sub(reservedSupply).div(targetEndBlock.sub(startBlock));
+        //safemath substraction cannot overflow
+        holyPerBlock = totalSupply.sub(totalSupply.mul(reservedPercent).div(100)).div(targetEndBlock.sub(startBlock));
         massUpdatePools();
     }
 
