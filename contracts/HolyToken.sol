@@ -10,8 +10,17 @@ import "./vesting/HolderTVLLock.sol";
 import "./vesting/HolderVesting.sol";
 import "./HolyKnight.sol";
 
+/**
+ * @dev // HolyToken is a ERC20 token for Holyheld.
+ *
+ * total amount is fixed at 100M HOLY tokens.
+ * HOLY token does not have mint functions.
+ * It will allocate upon creation the initial transfers
+ * of tokens. It is not ownable or having any other
+ * means of distribution other than transfers in its constructor. 
+ */
 // HolyToken. Ownable, fixed-amount (non-mintable) with governance to be added
-contract HolyToken is ERC20("HolyToken", "HOLY"), Ownable {
+contract HolyToken is ERC20("HolyToken", "HOLY") {
 
     // main developers (founders) multi-sig wallet
     // 1 mln tokens

@@ -12,16 +12,18 @@ import "./interfaces/Stakeable.sol";
 import "./HolyToken.sol";
 
 
-// HolyKnight is using LP to distribute Holyheld token
-//
-// it does not mint any HOLY tokens, they must be present on the
-// contract's token balance. Balance is not intended to be refillable.
-//
-// Note that it's ownable and the owner wields tremendous power. The ownership
-// will be transferred to a governance smart contract once HOLY is sufficiently
-// distributed and the community can show to govern itself.
-//
-// Have fun reading it. Hopefully it's bug-free. God bless.
+/**
+ * @dev // HolyKnight is using LP to distribute Holyheld token
+ *
+ * it does not mint any HOLY tokens, they must be present on the
+ * contract's token balance. Balance is not intended to be refillable.
+ *
+ * Note that it's ownable and the owner wields tremendous power. The ownership
+ * will be transferred to a governance smart contract once HOLY is sufficiently
+ * distributed and the community can show to govern itself.
+ *
+ * Have fun reading it. Hopefully it's bug-free. God bless.
+ */
 contract HolyKnight is Ownable {
     using SafeMath for uint256;
     using SafeERC20 for IERC20;
