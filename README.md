@@ -52,15 +52,15 @@ Your third mining option will be staking popular DeFi LP tokens. To facilitate f
 
 ## Deployed Contracts
 
-- HolyToken - 
+[HolyToken](https://etherscan.io/address/0xa59b009cd174710d9c79b5b1fe38d7347717cf4e) - The Holyheld token
 
-- HolyKnight - 
+[HolyKnight](https://etherscan.io/address/0xd37dcef51fdb6545c2f5187484ea3bca4ac64875) - Holy Knight, contract to manage the LP staking
 
-- HolderTVLLock - 
+[HolderTVLLock](https://etherscan.io/address/0x6e0a6448056a59a8fbd1e527f63ae85b33b059ef) - Holder contract for team tokens, vested weekly with TVL value all-time-high condition
 
-- HolderTimelock -
+[HolderTimelock](https://etherscan.io/address/0x044324535936ede7d3971f21a393841f7a00cadb) - Holder contract to reserve tokens for trade mining after launch
 
-- HolderVesting - 
+[HolderVesting](https://etherscan.io/address/0xb58d25db06b84118843c0ab79b6ff51571d443c6) - Holder contract for operations, vested weekly
 
 ## Attributions
 
