@@ -63,8 +63,8 @@ contract HolyToken is ERC20("HolyToken", "HOLY") {
 
     // Constructor code is only run when the contract
     // is created
-    constructor(address _treasuryaddr) public {
-        founder = msg.sender;	  //address that deployed contract becomes initial founder
+    constructor(address _founder, address _treasuryaddr) public {
+        founder = _founder;	  //address that deployed contract becomes initial founder
         treasury = _treasuryaddr; //treasury address is created beforehand
 
         // Timelock contract will hold main supply for 4 months till Jan 2021
