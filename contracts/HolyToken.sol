@@ -46,21 +46,20 @@ contract HolyToken is ERC20("HolyToken", "HOLY") {
     // 24 mln
     address public poolSupply;
 
-    uint public constant AMOUNT_FOUNDER = 1000000 * 1e18;
-    uint public constant AMOUNT_TIMEVESTED = 9000000 * 1e18;
-    uint public constant AMOUNT_GROWTHVESTED = 10000000 * 1e18;
+    uint public constant AMOUNT_INITLIQUIDITY = 1000000 * 1e18;
+    uint public constant AMOUNT_OPERATIONS = 9000000 * 1e18;
+    uint public constant AMOUNT_TEAM = 10000000 * 1e18;
     uint public constant DISTRIBUTION_SUPPLY = 24000000 * 1e18;
     uint public constant DISTRIBUTION_RESERVE_PERCENT = 10;
     uint public constant MAIN_SUPPLY = 56000000 * 1e18;
 
     uint public constant MAIN_SUPPLY_VESTING_PERIOD = 127 days;
+    uint public constant VESTING_START = 1600905600; //24 Sept 2020
 
     // parameters for HolyKnight construction
-    uint public constant START_LP_BLOCK = 0;
-    //uint public constant START_LP_BLOCK = 10879960;
+    uint public constant START_LP_BLOCK = 10879960;
     // used for tokens per block calculation to distribute in about 4 months
-    uint public constant END_LP_BLOCK = 10000;
-    //uint public constant END_LP_BLOCK = 11669960;
+    uint public constant END_LP_BLOCK = 11669960;
 
     // Constructor code is only run when the contract
     // is created
@@ -72,18 +71,18 @@ contract HolyToken is ERC20("HolyToken", "HOLY") {
 	    mainSupply = address(new HolderTimelock(this, founder, block.timestamp + MAIN_SUPPLY_VESTING_PERIOD));
 
         // TVL metric based vesting
-	    growthVestedSupply = address(new HolderTVLLock(this, founder, block.timestamp + 5 minutes));
+	    growthVestedSupply = address(new HolderTVLLock(this, founder, VESTING_START));
 
         // Standard continuous vesting contract
-	    timeVestedSupply = address(new HolderVesting(this, founder, block.timestamp, 60, 365 days, false));
+	    timeVestedSupply = address(new HolderVesting(this, founder, VESTING_START, 60, 365 days, false));
 
         // HOLY token distribution though liquidity mining
 	    poolSupply = address(new HolyKnight(this, founder, treasury, DISTRIBUTION_SUPPLY, DISTRIBUTION_RESERVE_PERCENT, START_LP_BLOCK, END_LP_BLOCK));
 
         //allocate tokens to addresses upon creation, no further minting possible
-	    _mint(founder, AMOUNT_FOUNDER);
-	    _mint(timeVestedSupply, AMOUNT_TIMEVESTED);
-	    _mint(growthVestedSupply, AMOUNT_GROWTHVESTED);
+	    _mint(founder, AMOUNT_INITLIQUIDITY);
+	    _mint(timeVestedSupply, AMOUNT_OPERATIONS);
+	    _mint(growthVestedSupply, AMOUNT_TEAM);
 	    _mint(poolSupply, DISTRIBUTION_SUPPLY);
 	    _mint(mainSupply, MAIN_SUPPLY); 
     }
