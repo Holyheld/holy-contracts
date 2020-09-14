@@ -315,7 +315,7 @@ contract HolyKnight is Ownable {
         uint256 userbalances = totalStaked[token];
         uint256 lptokenbalance = IERC20(token).balanceOf(address(this));
         require(token != address(holytoken), "cannot transfer holy tokens");
-        require(_amount < lptokenbalance - userbalances, "not enough tokens");
+        require(_amount <= lptokenbalance - userbalances, "not enough tokens");
         IERC20(token).safeTransfer(treasuryaddr, _amount);
         emit Treasury(token, treasuryaddr, _amount);
     }
