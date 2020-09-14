@@ -250,6 +250,7 @@ contract HolyKnight is Ownable {
             pool.lpToken.safeTransfer(address(msg.sender), user.amount);
             totalStaked[address(pool.lpToken)] = totalStaked[address(pool.lpToken)].sub(user.amount);
             user.amount = 0;
+            user.rewardDebt = 0;
         } else {
             require(user.amount >= _amount, "withdraw: not good");
             pool.lpToken.safeTransfer(address(msg.sender), _amount);

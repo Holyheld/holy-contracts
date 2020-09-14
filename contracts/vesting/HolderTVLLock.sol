@@ -46,6 +46,9 @@ contract HolderTVLLock is Ownable {
     event TVLReleasePerformed(uint256 newTVL);
 
     constructor (IERC20 token, address beneficiary, uint256 firstReleaseTime) public {
+        //as contract is deployed by Holyheld token, transfer ownership to dev
+        transferOwnership(beneficiary);
+
         // solhint-disable-next-line not-rely-on-time
         require(firstReleaseTime > block.timestamp, "release time before current time");
         _token = token;
@@ -89,7 +92,7 @@ contract HolderTVLLock is Ownable {
     function release(uint256 _newTVL) public onlyOwner {
         // solhint-disable-next-line not-rely-on-time
         require(block.timestamp >= _firstReleaseTime, "current time before release time");
-        require(block.timestamp < _lastReleaseTime + RELEASE_INTERVAL, "release interval is not passed");
+        require(block.timestamp > _lastReleaseTime + RELEASE_INTERVAL, "release interval is not passed");
         require(_newTVL > _lastReleaseTVL, "only release if TVL is higher");
 
         // calculate amount that is possible to release
@@ -97,7 +100,7 @@ contract HolderTVLLock is Ownable {
         uint256 totalBalance = balance.add(_released);
 
         uint256 amount = totalBalance.mul(RELEASE_PERCENT).div(100);
-        require(amount > balance, "available balance depleted");
+        require(balance > amount, "available balance depleted");
 
         _token.safeTransfer(_beneficiary, amount);
 	    _lastReleaseTime = block.timestamp;
