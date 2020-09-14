@@ -22,6 +22,8 @@ contract HolderVesting is Ownable {
     using SafeMath for uint256;
     using SafeERC20 for IERC20;
 
+    uint256 private constant RELEASE_INTERVAL = 1 weeks;
+
     event TokensReleased(address token, uint256 amount);
     event TokenVestingRevoked(address token);
 
@@ -32,9 +34,11 @@ contract HolderVesting is Ownable {
     IERC20 private _token;
 
     // Durations and timestamps are expressed in UNIX time, the same units as block.timestamp.
-    uint256 private _cliff;
     uint256 private _start;
     uint256 private _duration;
+
+    // timestamp when token release was made last time
+    uint256 private _lastReleaseTime;
 
     bool private _revocable;
 
@@ -46,16 +50,13 @@ contract HolderVesting is Ownable {
      * beneficiary, gradually in a linear fashion until start + duration. By then all
      * of the balance will have vested.
      * @param beneficiary address of the beneficiary to whom vested tokens are transferred
-     * @param cliffDuration duration in seconds of the cliff in which tokens will begin to vest
      * @param start the time (as Unix time) at which point vesting starts
      * @param duration duration in seconds of the period in which the tokens will vest
      * @param revocable whether the vesting is revocable or not
      */
-    constructor(IERC20 token, address beneficiary, uint256 start, uint256 cliffDuration, uint256 duration, bool revocable) public {
+    constructor(IERC20 token, address beneficiary, uint256 start, uint256 duration, bool revocable) public {
 
         require(beneficiary != address(0), "beneficiary is zero address");
-        // solhint-disable-next-line max-line-length
-        require(cliffDuration <= duration, "cliff longer than duration");
         require(duration > 0, "duration is 0");
         // solhint-disable-next-line max-line-length
         require(start.add(duration) > block.timestamp, "final time before current time");
@@ -68,7 +69,6 @@ contract HolderVesting is Ownable {
 
         _revocable = revocable;
         _duration = duration;
-        _cliff = start.add(cliffDuration);
         _start = start;
     }
 
@@ -77,13 +77,6 @@ contract HolderVesting is Ownable {
      */
     function beneficiary() public view returns (address) {
         return _beneficiary;
-    }
-
-    /**
-     * @return the cliff time of the token vesting.
-     */
-    function cliff() public view returns (uint256) {
-        return _cliff;
     }
 
     /**
@@ -122,16 +115,25 @@ contract HolderVesting is Ownable {
     }
 
     /**
+     * @return the time when the tokens were released last time.
+     */
+    function lastReleaseTime() public view returns (uint256) {
+        return _lastReleaseTime;
+    }
+
+    /**
      * @notice Transfers vested tokens to beneficiary.
      */
     function release() public {
         uint256 unreleased = _releasableAmount();
 
         require(unreleased > 0, "no tokens are due");
+        require(block.timestamp > _lastReleaseTime + RELEASE_INTERVAL, "release interval is not passed");
 
         _released = _released.add(unreleased);
 
         _token.safeTransfer(_beneficiary, unreleased);
+        _lastReleaseTime = block.timestamp;
 
         emit TokensReleased(address(_token), unreleased);
     }
@@ -170,7 +172,7 @@ contract HolderVesting is Ownable {
         uint256 currentBalance = _token.balanceOf(address(this));
         uint256 totalBalance = currentBalance.add(_released);
 
-        if (block.timestamp < _cliff) {
+        if (block.timestamp < _start) {
             return 0;
         } else if (block.timestamp >= _start.add(_duration) || _revoked) {
             return totalBalance;
