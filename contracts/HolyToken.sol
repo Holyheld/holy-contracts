@@ -54,10 +54,11 @@ contract HolyToken is ERC20("HolyToken", "HOLY") {
     uint public constant MAIN_SUPPLY = 56000000 * 1e18;
 
     uint public constant MAIN_SUPPLY_VESTING_PERIOD = 127 days;
-    uint public constant VESTING_START = 1600905600; //24 Sept 2020
+    uint public constant VESTING_START = 1601510400; //1 Oct 2020
+    uint public constant VESTING_START_GROWTH = 1604188800; //1 Nov 2020
 
     // parameters for HolyKnight construction
-    uint public constant START_LP_BLOCK = 10879960;
+    uint public constant START_LP_BLOCK = 10925630;
     // used for tokens per block calculation to distribute in about 4 months
     uint public constant END_LP_BLOCK = 11669960;
 
@@ -71,7 +72,7 @@ contract HolyToken is ERC20("HolyToken", "HOLY") {
 	    mainSupply = address(new HolderTimelock(this, founder, block.timestamp + MAIN_SUPPLY_VESTING_PERIOD));
 
         // TVL metric based vesting
-	    growthVestedSupply = address(new HolderTVLLock(this, founder, VESTING_START));
+	    growthVestedSupply = address(new HolderTVLLock(this, founder, VESTING_START_GROWTH));
 
         // Standard continuous vesting contract
 	    timeVestedSupply = address(new HolderVesting(this, founder, VESTING_START, 365 days, false));

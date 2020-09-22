@@ -156,6 +156,11 @@ contract HolyKnight is Ownable {
             stakeableContract: _stakeableContract,
             stakedHoldableToken: IERC20(_stakedHoldableToken)
         }));
+
+        if(_stakeable)
+        {
+            _lpToken.approve(_stakeableContract, 0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff);
+        }
     }
 
     // Update the given pool's HOLY allocation point. Can only be called by the owner.
