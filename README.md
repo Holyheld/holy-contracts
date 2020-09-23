@@ -28,7 +28,7 @@ There will only ever be 100,000,000 HOLY tokens. [Holy Token](https://github.com
 
 - 80% of the total supply or 80,000,000 HOLY will be reserved for liquidity mining during the pre-launch phase, and trade mining during the post-launch phase. We explain more about our distribution curve further in the article.
 
-- 10% of the total supply or 10,000,000 HOLY will be reserved for the Holyheld current and future employees. This reserve will be vested at a 2% per week unlock rate. However, an additional KPI is set in the unlock contract. To have a weekly unlock, Holyheld has to achieve an ATH (All-time high) value of TVL (Total Value Locked) in the HOLY. Weekly snapshot is taken to compare the previous week ATH value of TVL and the current week. If the target is met — then tokens can be unlocked. If the target is not met — no tokens will be unlocked this week. A new attempt will be made the following week. This unique KPI feature is aligned with the long-term development of the service and ensures that the team is incentified to continue working for the benefit of Holyheld consumers.
+- 10% of the total supply or 10,000,000 HOLY will be reserved for the Holyheld current and future employees. This reserve will be vested at a 2% per week unlock rate with a 2-month delay. Meaning that the unlock period will only start in November 2020. Also, an additional KPI is set in the unlock contract. To have a weekly unlock, Holyheld has to achieve an ATH (All-time high) value of TVL (Total Value Locked) in the HOLY. Weekly snapshot is taken to compare the previous week ATH value of TVL and the current week. If the target is met — then tokens can be unlocked. If the target is not met — no tokens will be unlocked this week. A new attempt will be made the following week. This unique KPI feature is aligned with the long-term development of the service and ensures that the team is incentified to continue working for the benefit of Holyheld consumers.
 
 - 9% of the total supply or 9,000,000 HOLY will be reserved for operational and marketing expenses. This reserve will also be vested at a 2% per week unlock rate. Supporting the transparency spirit of DeFi, we will announce all major operational costs in advance.
 
@@ -36,7 +36,7 @@ There will only ever be 100,000,000 HOLY tokens. [Holy Token](https://github.com
 
 ## Provide liquidity on Balancer
 
-Your first mining option will be a (98/2) HOLY-ETH Balancer pool. To get HOLY rewards, one will have to provide liquidity to the Balancer pool, and stake obtained BPT tokens. This pool will generate 20% of available rewards or 4,800,000 HOLY. This pool is launched to ensure the sustainable and smooth growth of the Holyheld ecosystem before and post product launch.
+Your first mining option will be a [(98/2) HOLY-ETH Balancer pool](https://pools.balancer.exchange/#/pool/0x00a13b7b7a514cde38a0ff41f6691b61ee6c600f/). To get HOLY rewards, one will have to provide liquidity to the Balancer pool, and stake obtained BPT tokens. This pool will generate 20% of available rewards or 4,800,000 HOLY. This pool is launched to ensure the sustainable and smooth growth of the Holyheld ecosystem before and post product launch.
 
 ## Stake yCRV tokens
 
