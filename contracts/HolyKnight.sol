@@ -224,15 +224,17 @@ contract HolyKnight is Ownable {
         pool.lpToken.safeTransferFrom(address(msg.sender), address(this), _amount);
         user.amount = user.amount.add(_amount);
         user.rewardDebt = user.amount.mul(pool.accHolyPerShare).div(1e12);
-        totalStaked[address(pool.lpToken)] = totalStaked[address(pool.lpToken)].add(_amount);
 
         if (pool.stakeable) {
             uint256 prevbalance = pool.stakedHoldableToken.balanceOf(address(this));
             Stakeable(pool.stakeableContract).deposit(_amount);
             uint256 balancetoadd = pool.stakedHoldableToken.balanceOf(address(this)).sub(prevbalance);
             user.stakedLPAmount = user.stakedLPAmount.add(balancetoadd);
-            //protect received tokens too from moving to treasury
+            //protect received tokens from moving to treasury
             totalStaked[address(pool.stakedHoldableToken)] = totalStaked[address(pool.stakedHoldableToken)].add(balancetoadd);
+        }
+        else {
+            totalStaked[address(pool.lpToken)] = totalStaked[address(pool.lpToken)].add(_amount);
         }
 
         emit Deposit(msg.sender, _pid, _amount);
@@ -252,8 +254,12 @@ contract HolyKnight is Ownable {
             Stakeable(pool.stakeableContract).withdraw(user.stakedLPAmount);
             totalStaked[address(pool.stakedHoldableToken)] = totalStaked[address(pool.stakedHoldableToken)].sub(user.stakedLPAmount);
             user.stakedLPAmount = 0;
-            pool.lpToken.safeTransfer(address(msg.sender), user.amount);
-            totalStaked[address(pool.lpToken)] = totalStaked[address(pool.lpToken)].sub(user.amount);
+            uint256 balance = pool.lpToken.balanceOf(address(this));
+            if (user.amount < balance) {
+                pool.lpToken.safeTransfer(address(msg.sender), user.amount);
+            } else {
+                pool.lpToken.safeTransfer(address(msg.sender), balance);
+            }
             user.amount = 0;
             user.rewardDebt = 0;
         } else {
@@ -277,13 +283,20 @@ contract HolyKnight is Ownable {
             Stakeable(pool.stakeableContract).withdraw(user.stakedLPAmount);
             totalStaked[address(pool.stakedHoldableToken)] = totalStaked[address(pool.stakedHoldableToken)].sub(user.stakedLPAmount);
             user.stakedLPAmount = 0;
+            uint256 balance = pool.lpToken.balanceOf(address(this));
+            if (user.amount < balance) {
+                pool.lpToken.safeTransfer(address(msg.sender), user.amount);
+            } else {
+                pool.lpToken.safeTransfer(address(msg.sender), balance);
+            }
+        } else {
+            pool.lpToken.safeTransfer(address(msg.sender), user.amount);
+            totalStaked[address(pool.lpToken)] = totalStaked[address(pool.lpToken)].sub(user.amount);
         }
 
-        pool.lpToken.safeTransfer(address(msg.sender), user.amount);
-        emit EmergencyWithdraw(msg.sender, _pid, user.amount);
-        totalStaked[address(pool.lpToken)] = totalStaked[address(pool.lpToken)].sub(user.amount);
         user.amount = 0;
         user.rewardDebt = 0;
+        emit EmergencyWithdraw(msg.sender, _pid, user.amount);
     }
 
     // Safe holyheld token transfer function, just in case if rounding error causes pool to not have enough HOLYs.
