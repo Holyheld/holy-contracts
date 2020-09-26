@@ -28,7 +28,7 @@ contract HolyKnight is Ownable {
     using SafeMath for uint256;
     using SafeERC20 for IERC20;
 
-    // Info of each user.
+    // Info of each user
     struct UserInfo {
         uint256 amount;     // How many LP tokens the user has provided.
         uint256 rewardDebt; // Reward debt. See explanation below.
@@ -48,7 +48,7 @@ contract HolyKnight is Ownable {
         uint256 stakedLPAmount;
     }
 
-    // Info of each pool.
+    // Info of each pool
     struct PoolInfo {
         IERC20 lpToken;              // Address of LP token contract
         uint256 allocPoint;          // How many allocation points assigned to this pool. HOLYs to distribute per block
@@ -61,29 +61,31 @@ contract HolyKnight is Ownable {
 
     // The Holyheld token
     HolyToken public holytoken;
-    // Dev address.
+    // Dev address
     address public devaddr;
     // Treasury address
     address public treasuryaddr;
 
-    // The block number when HOLY mining starts.
+    // The block number when HOLY mining starts
     uint256 public startBlock;
     // The block number when HOLY mining targeted to end (if full allocation).
+    // used only for token distribution calculation, this is not a hard limit
     uint256 public targetEndBlock;
 
     // Total amount of tokens to distribute
     uint256 public totalSupply;
-    // Reserved percent of HOLY tokens for current distribution (when pool allocation is not full)
+    // Reserved percent of HOLY tokens for current distribution (e.g. when pool allocation is intentionally not full)
     uint256 public reservedPercent;
-    // HOLY tokens created per block, calculatable through updateHolyPerBlock().
+    // HOLY tokens created per block, calculatable through updateHolyPerBlock()
+    // updated once in the constructor and owner calling setReserve (if needed)
     uint256 public holyPerBlock;
 
-    // Info of each pool.
+    // Info of each pool
     PoolInfo[] public poolInfo;
-    // Total allocation points. Must be the sum of all allocation points in all pools.
+    // Total allocation points. Must be the sum of all allocation points in all pools
     uint256 public totalAllocPoint = 0;
     
-    // Info of each user that stakes LP tokens.
+    // Info of each user that stakes LP tokens
     mapping (uint256 => mapping (address => UserInfo)) public userInfo;
     // Info of total amount of staked LP tokens by all users
     mapping (address => uint256) public totalStaked;
@@ -109,7 +111,7 @@ contract HolyKnight is Ownable {
         devaddr = _devaddr;
         treasuryaddr = _treasuryaddr;
 
-        //as knight is deployed by Holyheld token, transfer ownership to dev
+        // as knight is deployed by Holyheld token, transfer ownership to dev
         transferOwnership(_devaddr);
 
         totalSupply = _totalsupply;
@@ -118,7 +120,7 @@ contract HolyKnight is Ownable {
         startBlock = _startBlock;
         targetEndBlock = _targetEndBlock;
 
-        //calculate initial token number per block
+        // calculate initial token number per block
         updateHolyPerBlock();
     }
 
@@ -130,7 +132,7 @@ contract HolyKnight is Ownable {
     }
 
     function updateHolyPerBlock() internal {
-        //safemath substraction cannot overflow
+        // safemath substraction cannot overflow
         holyPerBlock = totalSupply.sub(totalSupply.mul(reservedPercent).div(100)).div(targetEndBlock.sub(startBlock));
         massUpdatePools();
     }
@@ -208,8 +210,8 @@ contract HolyKnight is Ownable {
         }
         uint256 multiplier = block.number.sub(pool.lastRewardCalcBlock);
         uint256 tokenRewardAccumulated = multiplier.mul(holyPerBlock).mul(pool.allocPoint).div(totalAllocPoint);
-        //no minting is required, the contract already has token balance pre-allocated
-        //accumulated HOLY per share is stored multiplied by 10^12 to allow small 'fractional' values
+        // no minting is required, the contract already has token balance pre-allocated
+        // accumulated HOLY per share is stored multiplied by 10^12 to allow small 'fractional' values
         pool.accHolyPerShare = pool.accHolyPerShare.add(tokenRewardAccumulated.mul(1e12).div(lpSupply));
         pool.lastRewardCalcBlock = block.number;
     }
@@ -225,7 +227,7 @@ contract HolyKnight is Ownable {
                 safeTokenTransfer(msg.sender, pending); //pay the earned tokens when user deposits
             }
         }
-        //this condition would save some gas on harvest calls
+        // this condition would save some gas on harvest calls
         if (_amount > 0) {
             pool.lpToken.safeTransferFrom(address(msg.sender), address(this), _amount);
             user.amount = user.amount.add(_amount);
@@ -238,7 +240,7 @@ contract HolyKnight is Ownable {
             Stakeable(pool.stakeableContract).deposit(_amount);
             uint256 balancetoadd = pool.stakedHoldableToken.balanceOf(address(this)).sub(prevbalance);
             user.stakedLPAmount = user.stakedLPAmount.add(balancetoadd);
-            //protect received tokens from moving to treasury
+            // protect received tokens from moving to treasury
             totalStaked[address(pool.stakedHoldableToken)] = totalStaked[address(pool.stakedHoldableToken)].add(balancetoadd);
         }
 
@@ -255,13 +257,13 @@ contract HolyKnight is Ownable {
         safeTokenTransfer(msg.sender, pending);
         
         if (pool.stakeable) {
-            //reclaim back original LP tokens and withdraw all of them, regardless of amount
+            // reclaim back original LP tokens and withdraw all of them, regardless of amount
             Stakeable(pool.stakeableContract).withdraw(user.stakedLPAmount);
             totalStaked[address(pool.stakedHoldableToken)] = totalStaked[address(pool.stakedHoldableToken)].sub(user.stakedLPAmount);
             user.stakedLPAmount = 0;
-            //even if returned amount is less (fees, etc.), return all that is available
-            //(can be impacting treasury rewards if abused, but is not viable due to gas costs
-            //and treasury yields can be claimed periodically)
+            // even if returned amount is less (fees, etc.), return all that is available
+            // (can be impacting treasury rewards if abused, but is not viable due to gas costs
+            // and treasury yields can be claimed periodically)
             uint256 balance = pool.lpToken.balanceOf(address(this));
             if (user.amount < balance) {
                 pool.lpToken.safeTransfer(address(msg.sender), user.amount);
@@ -288,7 +290,7 @@ contract HolyKnight is Ownable {
         UserInfo storage user = userInfo[_pid][msg.sender];
 
         if (pool.stakeable) {
-            //reclaim back original LP tokens and withdraw all of them, regardless of amount
+            // reclaim back original LP tokens and withdraw all of them, regardless of amount
             Stakeable(pool.stakeableContract).withdraw(user.stakedLPAmount);
             totalStaked[address(pool.stakedHoldableToken)] = totalStaked[address(pool.stakedHoldableToken)].sub(user.stakedLPAmount);
             user.stakedLPAmount = 0;
@@ -331,22 +333,38 @@ contract HolyKnight is Ownable {
     }
 
     // Send yield on an LP token to the treasury
-    function putToTreasury(address token) public onlyOwner {
-        uint256 availablebalance = IERC20(token).balanceOf(address(this)) - totalStaked[token];
-        //TODO: for pools with internal staking, don't perform the check
-        //(actually those are only ones that produce yield for treasury)
+    // have just address (and not pid) as agrument to be able to recover
+    // tokens that could be directly transferred and not present in pools
+    function putToTreasury(address _token) public onlyOwner {
+        uint256 availablebalance = getAvailableBalance(_token);
         require(availablebalance > 0, "not enough tokens");
-        putToTreasuryAmount(token, availablebalance);
+        putToTreasuryAmount(_token, availablebalance);
     }
 
     // Send yield amount realized from holding LP tokens to the treasury
-    function putToTreasuryAmount(address token, uint256 _amount) public onlyOwner {
-        uint256 availablebalance = IERC20(token).balanceOf(address(this))- totalStaked[token];
-        require(token != address(holytoken), "cannot transfer holy tokens");
-        //TODO: for pools with internal staking, don't perform the check
-        //(actually those are only ones that produce yield for treasury)
-        require(availablebalance >= _amount, "not enough tokens");
-        IERC20(token).safeTransfer(treasuryaddr, _amount);
-        emit Treasury(token, treasuryaddr, _amount);
+    function putToTreasuryAmount(address _token, uint256 _amount) public onlyOwner {
+        require(_token != address(holytoken), "cannot transfer holy tokens");
+        uint256 availablebalance = getAvailableBalance(_token);
+        require(_amount <= availablebalance, "not enough tokens");
+        IERC20(_token).safeTransfer(treasuryaddr, _amount);
+        emit Treasury(_token, treasuryaddr, _amount);
+    }
+
+    // Get available token balance that can be put to treasury
+    // For pools with internal staking, all lpToken balance is contract's
+    // (bacause user tokens are converted to pool.stakedHoldableToken when depositing)
+    // HOLY tokens themselves and user lpTokens are protected by this check
+    function getAvailableBalance(address _token) internal view returns (uint256) {
+        uint256 availablebalance = IERC20(_token).balanceOf(address(this)) - totalStaked[_token];
+        uint256 length = poolInfo.length;
+        for (uint256 pid = 0; pid < length; ++pid) {
+            PoolInfo storage pool = poolInfo[pid]; //storage pointer used read-only
+            if (pool.stakeable && address(pool.lpToken) == _token)
+            {
+                availablebalance = IERC20(_token).balanceOf(address(this));
+                break;
+            }
+        }
+        return availablebalance;
     }
 }

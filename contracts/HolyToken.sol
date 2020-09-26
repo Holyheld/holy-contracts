@@ -50,7 +50,7 @@ contract HolyToken is ERC20("HolyToken", "HOLY") {
     uint public constant AMOUNT_OPERATIONS = 9000000 * 1e18;
     uint public constant AMOUNT_TEAM = 10000000 * 1e18;
     uint public constant DISTRIBUTION_SUPPLY = 24000000 * 1e18;
-    uint public constant DISTRIBUTION_RESERVE_PERCENT = 10;
+    uint public constant DISTRIBUTION_RESERVE_PERCENT = 0;
     uint public constant MAIN_SUPPLY = 56000000 * 1e18;
 
     uint public constant MAIN_SUPPLY_VESTING_PERIOD = 127 days;
