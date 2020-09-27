@@ -46,15 +46,15 @@ Your third mining option will be staking popular DeFi LP tokens. To facilitate f
 
 ## Deployed Contracts
 
-[HolyToken](https://etherscan.io/token/0x11777d951cc9be0bafff437d30fbcc759410daab) - The Holyheld token
+[HolyToken](https://etherscan.io/token/0x39eae99e685906ff1c11a962a743440d0a1a6e09) - The Holyheld token
 
-[HolyKnight](https://etherscan.io/address/0x1cfcc600ad16525a4e6eb7cd4f8dee96c02ec064) - Holy Knight, contract to manage the LP staking
+[HolyKnight](https://etherscan.io/address/0x5D33dE3E540b289f9340D059907ED648c9E7AaDD) - Holy Knight, contract to manage the LP staking
 
-[HolderTVLLock](https://etherscan.io/address/0x66589f17ff64917251ace8e680e96d44e49ccc70) - Holder contract for team tokens, vested weekly with TVL value all-time-high condition
+[HolderTVLLock](https://etherscan.io/address/0x0b713c0e7eeb43fcd7795c03ba64ea6a6f0e11ea) - Holder contract for team tokens, vested weekly with TVL value all-time-high condition
 
 [HolderTimelock](https://etherscan.io/address/0xfea2cc041fb9e1bd73b8deb6b79aa96c712383d9) - Holder contract to reserve tokens for trade mining after launch
 
-[HolderVesting](https://etherscan.io/address/0xc215126d3c2335e7e959b55d1f203448e4c344ac) - Holder contract for operations vested for 1 year.
+[HolderVesting](https://etherscan.io/address/0x6074Aabb7eA337403DC9dfF4217fe7d533B5E459) - Holder contract for operations vested for 1 year.
 
 ## Attributions
 
