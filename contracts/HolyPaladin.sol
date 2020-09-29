@@ -3,12 +3,7 @@
 pragma solidity 0.6.12;
 
 
-import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import "@openzeppelin/contracts/token/ERC20/SafeERC20.sol";
-import "@openzeppelin/contracts/utils/EnumerableSet.sol";
-import "@openzeppelin/contracts/math/SafeMath.sol";
-import "./HolyKnight.sol";
-
+import "./interfaces/IHolyKnightRestricted.sol";
 
 /**
  * @dev // HolyPaladin is a contract that should mitigate treasury vulnerability
@@ -18,13 +13,13 @@ import "./HolyKnight.sol";
  */
 contract HolyPaladin {
     // The HolyKnight contract
-    HolyKnight public holyknight;
+    IHolyKnightRestricted public holyknight;
 
     // The managing multisig wallet
     address public teamaddr;
 
     constructor(
-        HolyKnight _contract,
+        IHolyKnightRestricted _contract,
         address _teamaddr
     ) public {
         holyknight = _contract;
