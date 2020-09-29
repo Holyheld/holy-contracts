@@ -32,17 +32,20 @@ There will only ever be 100,000,000 HOLY tokens. [Holy Token](https://github.com
 
 - 10% of the total supply or 10,000,000 HOLY will be reserved for operational and marketing expenses. This reserve will also be vested at a 2% per week unlock rate. Supporting the transparency spirit of DeFi, we will announce all major operational costs in advance.
 
+## Adjustion of the Rewards Distribution Weights
+There has been an update on the rewards distribution weights according to the [latest community updates](https://medium.com/holyheld/first-community-updates-fc2ab74b638b)
+
 ## Stake yCRV tokens
 
-Your first mining option will be staking [yCRV](https://uniswap.info/token/0xdf5e0e81dff6faf3a7e52ba697820c5e32d806a8) tokens. To get HOLY rewards, one will have to stake obtained yCRV tokens. This pool will generate 60% of available rewards or 14,400,000 HOLY. This option is launched because yUSD is the most credible stablecoin farming with very high APY. It’s also hard to farm, as one needs to have other stablecoins first. To generate interest, Holyheld will auto-stake yCRV  in the yCurve vault on Yearn Finance to obtain yyCRV LP tokens. Since all accumulated during the pre-launch phase yield will be used solely to buyback the tokens and facilitate service fees, the proposal suggests this pool having the biggest rewards.
+Your first mining option will be staking [yCRV](https://uniswap.info/token/0xdf5e0e81dff6faf3a7e52ba697820c5e32d806a8) tokens. To get HOLY rewards, one will have to stake obtained yCRV tokens. This pool will generate 35% of available rewards or 8,400,000 HOLY. This option is launched because yUSD is the most credible stablecoin farming with very high APY. It’s also hard to farm, as one needs to have other stablecoins first. To generate interest, Holyheld will auto-stake yCRV  in the yCurve vault on Yearn Finance to obtain yyCRV LP tokens. Since all accumulated during the pre-launch phase yield will be used solely to buyback the tokens and facilitate service fees, the proposal suggests this pool having big rewards.
 
 ## Provide liquidity
 
-Your second mining option will be by staking HOLY-ETH UNI-V2 LP tokens. To get HOLY rewards, one will have to provide liquidity to the Uniswap pool, and stake obtained LP tokens. This pool will generate 20% of available rewards or 4,800,000 HOLY. This is a community managed pool. For the rewards to start accruing, the community will have to farm enough HOLY first to create a liquidity pool on Uniswap. This option is launched to ensure the sustainable and smooth growth of the Holyheld ecosystem before and post product launch.
+Your second mining option will be by staking HOLY-ETH UNI-V2 LP tokens. To get HOLY rewards, one will have to provide liquidity to the Uniswap pool, and stake obtained LP tokens. This pool will generate 50% of available rewards or 12,000,000 HOLY. This is a community managed pool. For the rewards to start accruing, the community will have to farm enough HOLY first to create a liquidity pool on Uniswap. This option is launched to ensure the sustainable and smooth growth of the Holyheld ecosystem before and post product launch.
 
 ## Stake popular DeFi LP tokens
 
-Your third mining option will be staking popular DeFi LP tokens. To facilitate fair distribution across the DeFi community, we will support the staking of major DeFi LP tokens. To be precise, our community will be able to stake the following LP tokens: [UNI-ETH](https://uniswap.info/pair/0xd3d2e2692501a5c9ca623199d38826e513033a17), [YFI-ETH](https://uniswap.info/pair/0x2fdbadf3c4d5a8666bc06645b8358ab803996e28), [LINK-ETH](https://uniswap.info/pair/0xa2107fa5b38d9bbd2c461d6edf11b11a50f6b974), [LEND-ETH](https://uniswap.info/pair/0xab3f9bf1d81ddb224a2014e98b238638824bcf20), [AMPL-ETH](https://uniswap.info/pair/0xc5be99a02c6857f9eac67bbce58df5572498f40c), [SNX-ETH](https://uniswap.info/pair/0x43ae24960e5534731fc831386c07755a2dc33d47), [COMP-ETH](https://uniswap.info/pair/0xcffdded873554f362ac02f8fb1f02e5ada10516f), and [MKR-ETH](https://uniswap.info/pair/0xc2adda861f89bbb333c90c492cb837741916a225). To get HOLY rewards, one will have to provide liquidity to the above-mentioned pools to get UNI-V2 LP tokens, and later stake obtained LP tokens. This option will generate accumulatively 20% of available rewards or 4,800,000 HOLY or 600,000 HOLY per pair.
+Your third mining option will be staking popular DeFi LP tokens. To facilitate fair distribution across the DeFi community, we will support the staking of major DeFi LP tokens. To be precise, our community will be able to stake the following LP tokens: [UNI-ETH](https://uniswap.info/pair/0xd3d2e2692501a5c9ca623199d38826e513033a17), [YFI-ETH](https://uniswap.info/pair/0x2fdbadf3c4d5a8666bc06645b8358ab803996e28), [LINK-ETH](https://uniswap.info/pair/0xa2107fa5b38d9bbd2c461d6edf11b11a50f6b974), [LEND-ETH](https://uniswap.info/pair/0xab3f9bf1d81ddb224a2014e98b238638824bcf20), [AMPL-ETH](https://uniswap.info/pair/0xc5be99a02c6857f9eac67bbce58df5572498f40c), [SNX-ETH](https://uniswap.info/pair/0x43ae24960e5534731fc831386c07755a2dc33d47), [COMP-ETH](https://uniswap.info/pair/0xcffdded873554f362ac02f8fb1f02e5ada10516f), and [MKR-ETH](https://uniswap.info/pair/0xc2adda861f89bbb333c90c492cb837741916a225). To get HOLY rewards, one will have to provide liquidity to the above-mentioned pools to get UNI-V2 LP tokens, and later stake obtained LP tokens. This option will generate accumulatively 15% of available rewards or 3,600,000 HOLY or 450,000 HOLY per pair.
 
 ## Deployed Contracts
 
@@ -50,7 +53,7 @@ Your third mining option will be staking popular DeFi LP tokens. To facilitate f
 
 [HolyKnight](https://etherscan.io/address/0x5D33dE3E540b289f9340D059907ED648c9E7AaDD) - Holy Knight, contract to manage the LP staking
 
-[HolderTVLLock](https://etherscan.io/address/0x0b713c0e7eeb43fcd7795c03ba64ea6a6f0e11ea) - Holder contract for team tokens, vested weekly with TVL value all-time-high condition
+[HolderTVLLock](https://etherscan.io/address/0xe292dc1095b96809913bc00ff06d95fdffaae43a) - Holder contract for team tokens, vested weekly with TVL value all-time-high condition
 
 [HolderTimelock](https://etherscan.io/address/0xfea2cc041fb9e1bd73b8deb6b79aa96c712383d9) - Holder contract to reserve tokens for trade mining after launch
 
