@@ -55,7 +55,7 @@ Your third mining option will be staking popular DeFi LP tokens. To facilitate f
 
 [HolderTVLLock](https://etherscan.io/address/0xe292dc1095b96809913bc00ff06d95fdffaae43a) - Holder contract for team tokens, vested weekly with TVL value all-time-high condition
 
-[HolderTimelock](https://etherscan.io/address/0xfea2cc041fb9e1bd73b8deb6b79aa96c712383d9) - Holder contract to reserve tokens for trade mining after launch
+[HolderTimelock](https://etherscan.io/address/0x0b713c0e7eeb43fcd7795c03ba64ea6a6f0e11ea) - Holder contract to reserve tokens for trade mining after launch
 
 [HolderVesting](https://etherscan.io/address/0x6074Aabb7eA337403DC9dfF4217fe7d533B5E459) - Holder contract for operations vested for 1 year.
 
