@@ -5,6 +5,8 @@ Holyheld makes the internet economy easy and available to everyone. The app abst
 
 ## Previously Deployed Contracts
 
+These contracts have been deployed previously, and are now no longer in use. 
+
 [HolyToken](https://etherscan.io/token/0x39eae99e685906ff1c11a962a743440d0a1a6e09) - The Holyheld token
 
 [HolyKnight](https://etherscan.io/address/0x5D33dE3E540b289f9340D059907ED648c9E7AaDD) - Holy Knight, contract to manage the LP staking
@@ -26,6 +28,8 @@ Much of this codebase is modified from existing works, including:
 [YEarn](https://yearn.finance)/[YFI](https://ygov.finance) - Initial fair distribution implementation
 
 ## New Deployed Contracts
+
+These contracts are currently used in Holyheld V2.
 
 [HHToken](https://etherscan.io/address/0x3FA729B4548beCBAd4EaB6EF18413470e6D5324C) - The Holyheld token
 
