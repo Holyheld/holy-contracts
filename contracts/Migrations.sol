@@ -1,6 +1,14 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.6.12;
 
+/*
+  NOTE: Migrations contract implements Truffle interface for marking last completed migration,
+        but also is enhanced to store (retrievable only by deployer) information map, used for
+        retrieving addresses of deployed contracts for providing persistent interdependence.
+
+        Therefore, keeping address of contract in build json for Truffle for every network is crucial
+        to keep things consistent.
+*/
 contract Migrations {
   address public owner;
   uint public lastCompletedMigration;

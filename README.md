@@ -33,6 +33,6 @@ These contracts are currently used in Holyheld V2.
 
 [HHToken](https://etherscan.io/address/0x3FA729B4548beCBAd4EaB6EF18413470e6D5324C) - The Holyheld token
 
-[HolyPassage](https://etherscan.io/address/0x39ac24FD08991B1d69A9ef7189Bc718C988fF5B3) - Migration and bonus tokens claim contract.
+[HolyPassage](https://etherscan.io/address/0x39ac24FD08991B1d69A9ef7189Bc718C988fF5B3) - Migration and bonus tokens claim contract
 
 [HolyVisor](https://etherscan.io/address/0x636356f857f89AF15Cb67735b68B9b673b5Cda6c) - Bonus multiplier oracle contract.
