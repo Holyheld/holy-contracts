@@ -18,6 +18,10 @@
  *
  */
 
+const HDWalletProvider = require("@truffle/hdwallet-provider");
+const mnemonic = "";
+const mnemonic_ropsten = "";
+
 // const HDWalletProvider = require('@truffle/hdwallet-provider');
 // const infuraKey = "fj4jll3k.....";
 //
@@ -46,14 +50,21 @@ module.exports = {
       host: "127.0.0.1",     // Localhost (default: none)
       port: 8545,            // Standard Ethereum port (default: none)
       network_id: "*",       // Any network (default: none)
-      gas: 18500000,           // Gas sent with each transaction (default: ~6700000)
+      gas: 7500000,           // Gas sent with each transaction (default: ~6700000)
      },
-    test: {
-      host: "127.0.0.1",     // Localhost (default: none)
-      port: 8545,            // Standard Ethereum port (default: none)
-      network_id: "*",       // Any network (default: none)
-      gas: 18500000,           // Gas sent with each transaction (default: ~6700000)
-     },
+    ropsten: {
+      provider: function() {
+        return new HDWalletProvider(mnemonic_ropsten, "https://ropsten.infura.io/v3/eac548bd478143d09d2c090d09251bf1")
+      },
+      network_id: 3
+    },
+    live: {
+      provider: function() {
+        return new HDWalletProvider(mnemonic, "https://mainnet.infura.io/v3/eac548bd478143d09d2c090d09251bf1")
+      },
+      network_id: 1,
+      gasPrice: 55000000000,  // 55 gwei (in wei) (default: 100 gwei)
+    },
     // Another network with more advanced options...
     // advanced: {
     // port: 8777,             // Custom port
@@ -89,15 +100,13 @@ module.exports = {
   // Configure your compilers
   compilers: {
     solc: {
-      version: "0.6.12",
-      // docker: true,        // Use "0.5.1" you've installed locally with docker (default: false)
-      // settings: {          // See the solidity docs for advice about optimization and evmVersion
-      //  optimizer: {
-      //    enabled: false,
-      //    runs: 200
-      //  },
-      //  evmVersion: "byzantium"
-      // }
-    },
+      version: '0.6.12',
+      settings: {
+        optimizer: {
+          enabled: true,
+          runs: 200
+        }
+      }
+    }
   },
 };
