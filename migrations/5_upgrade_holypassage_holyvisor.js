@@ -21,8 +21,13 @@ module.exports = async function (deployer, network, accounts) {
     holyPassageaddr = (await HolyPassageV2.deployed()).address;
   } else if (network == "ropsten" || network == "ropsten-fork" /* for dry-run */) {
     founderaddr = "0x9EDfA914175FD5580c80e329F7dE80654E8d63e1";
-    holyV1addr = (await HolyToken.deployed()).address; //"0x8bf53f953cca619c01a25b43b6d7379dab8087be";
-    holyV2addr = (await HHToken.deployed()).address; //"0xDEbEA9E38B0e3fc6c7C46857F3487f59809C18ac";
+    holyV1addr = (await HolyToken.deployed()).address;
+    holyV2addr = (await HHToken.deployed()).address;
+    holyPassageaddr = (await HolyPassage.deployed()).address;
+  } else if (network == "kovan" || network == "kovan-fork" /* for dry-run */) {
+    founderaddr = "0x9EDfA914175FD5580c80e329F7dE80654E8d63e1";
+    holyV1addr = (await HolyToken.deployed()).address;
+    holyV2addr = (await HHToken.deployed()).address;
     holyPassageaddr = (await HolyPassage.deployed()).address;
   } else {
     founderaddr = accounts[0];
@@ -31,7 +36,7 @@ module.exports = async function (deployer, network, accounts) {
     holyPassageaddr = (await HolyPassage.deployed()).address;
   }
 
-  if (network == "develop" || network == "ropsten" || network == "ropsten-fork" /* for dry-run */) {
+  if (network == "develop" || network == "ropsten" || network == "ropsten-fork" || network == "kovan" || network == "kovan-fork" /* for dry-run */) {
     console.log("UPGRADING HOLYPASSAGE at address " + holyPassageaddr + " IN network=" + network)
     console.log("HOLY Token (v1) address: " + holyV1addr);
     console.log("HH Token (v2) address: " + holyV2addr);

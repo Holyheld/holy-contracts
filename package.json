@@ -14,6 +14,7 @@
     "eth-permit": "^0.1.9",
     "ethers": "^5.0.26",
     "solhint": "^3.2.0",
+    "solium": "^1.2.5",
     "truffle": "^5.1.41",
     "truffle-assertions": "^0.9.2",
     "truffle-flattener": "^1.4.4",

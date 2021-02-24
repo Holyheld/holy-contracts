@@ -8,7 +8,8 @@ module.exports = async function(deployer, network, accounts) {
     console.log("Holy V1 token is already deployed in mainnet, skipping this step");
     return;
   } else if (network == "ropsten" || network == "ropsten-fork") {
-    // this should be covered by migrations properly and not redeployed
+    founderaddr = "0x9EDfA914175FD5580c80e329F7dE80654E8d63e1";
+  } else if (network == "kovan" || network == "kovan-fork") {
     founderaddr = "0x9EDfA914175FD5580c80e329F7dE80654E8d63e1";
   } else {
     founderaddr = accounts[0];
