@@ -1,5 +1,5 @@
-// migrations/3_deploy_upgradeable_hh_token.js
-const HHToken = artifacts.require('HHToken');
+// migrations/8_deploy_holyhand.js
+const HolyHand = artifacts.require('HolyHand');
  
 const { deployProxy } = require('@openzeppelin/truffle-upgrades');
  
@@ -15,11 +15,12 @@ module.exports = async function (deployer, network, accounts) {
     founderaddr = accounts[0];
   }
 
-  console.log("DEPLOYING HH TOKEN, network=" + network)
   if (founderaddr == '') {
     throw("ERROR: no address set for founder");
   }
+  
+  console.log("DEPLOYING HolyHand TRANSFER PROXY, network=" + network)
 
-  const tokenInstance = await deployProxy(HHToken, ["Holyheld", "HH"], { unsafeAllowCustomTypes: true, from: founderaddr });
-  console.log('HH Token deployed at address: ', tokenInstance.address);
+  const holyHandInstance = await deployProxy(HolyHand, [], { unsafeAllowCustomTypes: true, from: founderaddr });
+  console.log('HolyHand transfer proxy deployed at address: ', holyHandInstance.address);
 };

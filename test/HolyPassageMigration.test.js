@@ -6,12 +6,10 @@ const truffleAssert = require('truffle-assertions');
 const { deployProxy } = require('@openzeppelin/truffle-upgrades');
 const { time } = require('@openzeppelin/test-helpers');
 
-//const web3 = require('web3');
-
 // Load compiled artifacts
 const HHToken = artifacts.require('HHToken');
 const HolyToken = artifacts.require('HolyToken');
-const HolyPassageV2 = artifacts.require('HolyPassageV2');
+const HolyPassageV2 = artifacts.require('HolyPassageV4');
 
 contract('HolyPassage (token migration scenarios)', function (accounts) {
   beforeEach(async function () {

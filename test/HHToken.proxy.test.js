@@ -1,9 +1,8 @@
-// test/HHToken.test.js
+// test/HHToken.proxy.test.js
 // Load dependencies
 const { expect } = require('chai');
 const truffleAssert = require('truffle-assertions');
 const { deployProxy } = require('@openzeppelin/truffle-upgrades');
-//const web3 = require('web3');
 
 // Load compiled artifacts
 const HHToken = artifacts.require('HHToken');

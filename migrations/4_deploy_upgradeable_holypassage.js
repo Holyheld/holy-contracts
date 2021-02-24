@@ -16,8 +16,12 @@ module.exports = async function (deployer, network, accounts) {
     holyV2addr = (await HHToken.deployed()).address;
   } else if (network == "ropsten" || network == "ropsten-fork" /* for dry-run */) {
     founderaddr = "0x9EDfA914175FD5580c80e329F7dE80654E8d63e1";
-    holyV1addr = (await HolyToken.deployed()).address; //"0x8bf53f953cca619c01a25b43b6d7379dab8087be";
-    holyV2addr = (await HHToken.deployed()).address; //"0xDEbEA9E38B0e3fc6c7C46857F3487f59809C18ac";
+    holyV1addr = (await HolyToken.deployed()).address;
+    holyV2addr = (await HHToken.deployed()).address;
+  } else if (network == "kovan" || network == "kovan-fork" /* for dry-run */) {
+    founderaddr = "0x9EDfA914175FD5580c80e329F7dE80654E8d63e1";
+    holyV1addr = (await HolyToken.deployed()).address;
+    holyV2addr = (await HHToken.deployed()).address;
   } else {
     founderaddr = accounts[0];
     holyV1addr = (await HolyToken.deployed()).address;
@@ -39,7 +43,7 @@ module.exports = async function (deployer, network, accounts) {
 
   let tokenInstance;
 
-  if (network == "develop" || network == "ropsten" || network == "ropsten-fork" /* for dry-run */) {
+  if (network == "develop" || network == "ropsten" || network == "ropsten-fork" || network == "kovan" || network == "kovan-fork" /* for dry-run */) {
     tokenInstance = await deployProxy(HolyPassage, [holyV1addr, holyV2addr], { unsafeAllowCustomTypes: true, from: founderaddr });
     console.log('HolyPassage deployed at address: ', tokenInstance.address);
   } else if (network == "live" || network == "live-fork") {

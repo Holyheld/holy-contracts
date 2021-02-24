@@ -5,12 +5,11 @@ const { expect } = require('chai');
 const truffleAssert = require('truffle-assertions');
 const { deployProxy } = require('@openzeppelin/truffle-upgrades');
 const { time } = require('@openzeppelin/test-helpers');
-const web3 = require('web3');
 
 // Load compiled artifacts
 const HHToken = artifacts.require('HHToken');
 const HolyToken = artifacts.require('HolyToken');
-const HolyPassageV2 = artifacts.require('HolyPassageV2');
+const HolyPassageV2 = artifacts.require('HolyPassageV4');
 const HolyVisor = artifacts.require('HolyVisor');
 
 contract('HolyPassage/HolyVisor (migration and bonus claim scenarios)', function (accounts) {
@@ -497,6 +496,83 @@ contract('HolyPassage/HolyVisor (migration and bonus claim scenarios)', function
     
     // total supply should also match migrated plus bonus token amount
     expect((await this.hhtoken.totalSupply()).toString()).to.equal((web3.utils.toBN(totalAmountMigrated).add(totalBonusClaimed)).toString());
+  });
+
+
+  // check for claimable bonus with migration
+  it('should allow migration even if no bonus data is available', async function () {
+    // migrate from account 3, transfer balance from account 1
+    const amountMigrate = web3.utils.toBN('1375352000000000000001'); // 1375.352
+    const totalBonuses = web3.utils.toBN('541375352000000000000001'); // 541375
+    const userMultiplier = web3.utils.toBN('2150000000000000000'); // 2.15x avg bonus
+    const userBonusCap = web3.utils.toBN('3500000000000000000000'); // 3500 max cap
+    
+    // total bonuses and bonus claim is enabled
+    await this.holypassage.setBonusClaimEnabled(true, { from: accounts[0] });
+    await this.holyvisor.setTotalAmount.sendTransaction(totalBonuses, { from: accounts[0] });
+    // do not set data for this account to migrate
+    //await this.holyvisor.setData([accounts[3]], [userMultiplier], [userBonusCap], { from: accounts[0] });
+
+    // now unlock many tokens (more than the maximum total amount)
+    const tokenPrice = web3.utils.toBN('1000000000000'); // 0.000001
+    const tokenMCap = web3.utils.toBN('10000000000000000000000'); // 10000
+    await this.holyvisor.UnlockUpdate(tokenMCap, tokenPrice, { from: accounts[0] }); // unlock 10B tokens (541K bonus ones)
+    expect((await this.holyvisor.bonusTotalUnlocked({ from: accounts[3]})).toString()).to.equal('10000000000000000000000000000');
+
+    await this.holytoken.transfer(accounts[3], amountMigrate, { from: accounts[1] });
+    const founder_balance = await this.holytoken.balanceOf(accounts[3]);
+    expect(founder_balance.toString()).to.equal('1375352000000000000001');
+
+    // no bonus is available for account
+    expect((await this.holypassage.getClaimableMigrationBonus({ from: accounts[3]})).toString()).to.equal('0');
+
+    // increase allowance to 1M
+    await this.holytoken.approve.sendTransaction(this.holypassage.address, web3.utils.toBN('1375352000000000000001'), { from: accounts[3] });
+    expect((await this.holytoken.allowance(accounts[3], this.holypassage.address, { from: accounts[3] })).toString()).to.equal('1375352000000000000001');
+
+    // perform migration
+    const tx = await this.holypassage.migrate({ from: accounts[3] });
+
+    // check appropriate balances
+    expect((await this.holytoken.balanceOf(accounts[3])).toString()).to.equal('0');
+    expect((await this.holytoken.balanceOf('0x000000000000000000000000000000000000dEaD')).toString()).to.equal('1375352000000000000001');
+
+    // check for events and amounts in them
+    truffleAssert.eventEmitted(tx, 'Migrated', (ev) => {
+      return ev.user.toString() === accounts[3].toString() && ev.amount.toString() === amountMigrate.toString();
+    });
+
+    truffleAssert.eventNotEmitted(tx, 'ClaimedBonus', (ev) => {
+      return true;
+    });
+
+    expect((await this.hhtoken.balanceOf(accounts[3])).toString()).to.equal(web3.utils.toBN(amountMigrate).toString());
+
+    // check that counters are properly incremented
+    expect((await this.holypassage.migratedTokens(accounts[3])).toString()).to.equal(amountMigrate.toString());
+    expect((await this.holypassage.claimedBonusTokens(accounts[3])).toString()).to.equal('0');
+    
+    // total supply should also match migrated plus bonus token amount
+    expect((await this.hhtoken.totalSupply()).toString()).to.equal(web3.utils.toBN(amountMigrate).toString());
+  });
+
+  // check for admin correction of migrated tokens and claimed bonus tokens
+  it('should allow admin to change migrated tokens amounts and claimed bonus tokens amounts', async function () {
+    const userMigrated = web3.utils.toBN('16343000000000000000');
+    const userClaimedBonus = web3.utils.toBN('3751000000000000000');
+    
+    await truffleAssert.reverts(this.holypassage.setMigratedAmounts([accounts[3]], [userMigrated], { from: accounts[2] }), "Admin only");
+    await truffleAssert.reverts(this.holypassage.setMigratedAmounts([accounts[3]], [], { from: accounts[0] }), "Array length mismatch");
+    await truffleAssert.reverts(this.holypassage.setClaimedBonusAmounts([accounts[3]], [userClaimedBonus], { from: accounts[2] }), "Admin only");
+
+    expect((await this.holypassage.migratedTokens(accounts[3])).toString()).to.equal('0');
+    expect((await this.holypassage.claimedBonusTokens(accounts[3])).toString()).to.equal('0');
+
+    await this.holypassage.setMigratedAmounts([accounts[3]], [userMigrated], { from: accounts[0] });
+    await this.holypassage.setClaimedBonusAmounts([accounts[3]], [userClaimedBonus], { from: accounts[0] });
+
+    expect((await this.holypassage.migratedTokens(accounts[3])).toString()).to.equal('16343000000000000000');
+    expect((await this.holypassage.claimedBonusTokens(accounts[3])).toString()).to.equal('3751000000000000000');
   });
 
   // test multi-step claim
