@@ -1,14 +1,14 @@
 ![](https://cdn-images-1.medium.com/max/2400/1*LuM8yaXNMimFw03NKZb6KA.png)
-## Holyheld — DeFi neobanking service.
+## Mover — DeFi neobanking service.
 
-Holyheld makes the internet economy easy and available to everyone. The app abstracts blockchain complexity so that you can finally get great financial service with all DeFi benefits. You can earn highest and safest yield on your digital assets with our automatic portfolio management system. You can also send, receive and swap 3000+ digital assets on Ethereum.  
+Mover makes the internet economy easy and available to everyone. The app abstracts blockchain complexity so that you can finally get great financial service with all DeFi benefits. You can earn highest and safest yield on your digital assets with our automatic portfolio management system. You can also send, receive and swap 3000+ digital assets on Ethereum.  
 
 
 ## New Deployed Contracts
 
-These contracts are currently used in Holyheld V2.
+These contracts are currently used in Mover V2.
 
-[HHToken](https://etherscan.io/address/0x3FA729B4548beCBAd4EaB6EF18413470e6D5324C) - The Holyheld token
+[MOVEToken](https://etherscan.io/address/0x3FA729B4548beCBAd4EaB6EF18413470e6D5324C) - The Mover token
 
 [HolyPassage](https://etherscan.io/address/0x39ac24FD08991B1d69A9ef7189Bc718C988fF5B3) - Migration and bonus tokens claim contract
 
