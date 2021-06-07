@@ -5,6 +5,12 @@ const HolyValorV2 = artifacts.require('HolyValorYearnUSDCVaultV2');
 const { deployProxy, upgradeProxy } = require('@openzeppelin/truffle-upgrades');
 
 module.exports = async function (deployer, network, accounts) {
+
+  if (network == "ropsten" || network == "ropsten-fork" || network == "kovan" || network == "kovan-fork") {
+    return; // skip this migration for testnets
+  }
+
+  
   let founderaddr = "";
   let holyValoraddr = "";
   if (network == "live" || network == "live-fork") {
@@ -24,6 +30,7 @@ module.exports = async function (deployer, network, accounts) {
   if (holyValoraddr == '') {
     throw("ERROR: no HolyValor address present to upgrade");
   }
+
 
   console.log("UPGRADING HOLYVALOR at address " + holyValoraddr + " IN network=" + network)
   

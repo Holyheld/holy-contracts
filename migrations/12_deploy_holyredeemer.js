@@ -7,6 +7,12 @@ const HolyValor = artifacts.require('HolyValorYearnUSDCVault');
 const { deployProxy } = require('@openzeppelin/truffle-upgrades');
 
 module.exports = async function (deployer, network, accounts) {
+
+  if (network == "ropsten" || network == "ropsten-fork" || network == "kovan" || network == "kovan-fork") {
+    return; // skip this migration for testnets
+  }
+
+
   let founderaddr = "";
   let ERC20USDCaddr = "";
   let pooladdr = (await HolyPool.deployed()).address;
@@ -33,6 +39,7 @@ module.exports = async function (deployer, network, accounts) {
     treasuryaddr = accounts[8];
     operationsaddr = accounts[9];
   }
+
 
   if (founderaddr == '') {
     throw("ERROR: no address set for founder");

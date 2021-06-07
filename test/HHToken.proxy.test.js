@@ -2,20 +2,23 @@
 // Load dependencies
 const { expect } = require('chai');
 const truffleAssert = require('truffle-assertions');
-const { deployProxy } = require('@openzeppelin/truffle-upgrades');
+const { deployProxy, upgradeProxy } = require('@openzeppelin/truffle-upgrades');
 
 // Load compiled artifacts
-const HHToken = artifacts.require('HHToken');
+const HHToken = artifacts.require('HHTokenV2');
+const MoverToken = artifacts.require('MoverToken');
 
 contract('HHToken (proxy)', function (accounts) {
   beforeEach(async function () {
     // Deploy a new contract for each test
-    this.hhtoken = await deployProxy(HHToken, ["Holyheld Token", "HH"], { unsafeAllowCustomTypes: true, from: accounts[0] });
-  });
+    this.hhtokenold = await deployProxy(HHToken, ["Holyheld", "HH"], { unsafeAllowCustomTypes: true, from: accounts[0] });
+    this.hhtoken = await upgradeProxy(this.hhtokenold.address, MoverToken, { unsafeAllowCustomTypes: true });
+    await this.hhtoken.setTokenName("MOVE", "Mover");
+});
 
   it('should have proper symbol, name and decimal places set', async function () {
-    expect((await this.hhtoken.symbol()).toString()).to.equal('HH');
-    expect((await this.hhtoken.name()).toString()).to.equal('Holyheld Token');
+    expect((await this.hhtoken.symbol()).toString()).to.equal('MOVE');
+    expect((await this.hhtoken.name()).toString()).to.equal('Mover');
     expect((await this.hhtoken.decimals()).toString()).to.equal('18');
   });
 
@@ -74,5 +77,13 @@ contract('HHToken (proxy)', function (accounts) {
     //await this.hhtoken.approve.sendTransaction(accounts[2], web3.utils.toBN('1000000000000000'), { from: accounts[1] });
     await truffleAssert.reverts(this.hhtoken.burnFrom(accounts[1], 900, { from: accounts[2] }), "burn amount exceeds allowance");
     expect((await this.hhtoken.totalSupply()).toString()).to.equal('955');
+  });
+
+  it('should have mass airdrop function', async function () {
+    await this.hhtoken.airdropTokens([ accounts[1], accounts[2] ], [ 64, 1024 ], { from: accounts[0] });
+    expect((await this.hhtoken.balanceOf(accounts[1])).toString()).to.equal('64');
+    expect((await this.hhtoken.balanceOf(accounts[2])).toString()).to.equal('1024');
+    expect((await this.hhtoken.totalSupply()).toString()).to.equal('1088');
+    await truffleAssert.reverts(this.hhtoken.airdropTokens([ accounts[1] ], [ 123 ], { from: accounts[1] }), "Admin only");
   });
 });

@@ -2,7 +2,8 @@
 // Load dependencies
 const { expect, assert } = require("chai");
 const truffleAssert = require('truffle-assertions');
-const { deployProxy } = require('@openzeppelin/truffle-upgrades');
+const { deployProxy, upgradeProxy } = require('@openzeppelin/truffle-upgrades');
+const { time } = require('@openzeppelin/test-helpers');
 
 const { signERC2612Permit } = require("eth-permit");
 const Web3 = require("web3");
@@ -12,7 +13,8 @@ const { keccak256 } = require('@ethersproject/keccak256');
 const { defaultAbiCoder } = require('@ethersproject/abi');
 
 // Load compiled artifacts
-const HHToken = artifacts.require('HHToken');
+const HHToken = artifacts.require('HHTokenV2');
+const MoverToken = artifacts.require('MoverToken');
 
 const web3 = new Web3("http://localhost:8545");
 
@@ -36,15 +38,17 @@ function getDomainSeparator(name, contractAddress, chainId) {
     )
 }
 
-contract('HHToken (permit features)', function (accounts) {
+contract('MoverToken (permit features)', function (accounts) {
     beforeEach(async function () {
       // Deploy a new contract for each test
-      this.hhtoken = await deployProxy(HHToken, ["Holyheld", "HH"], { unsafeAllowCustomTypes: true, from: accounts[0] });
+      this.hhtokenold = await deployProxy(HHToken, ["Holyheld", "HH"], { unsafeAllowCustomTypes: true, from: accounts[0] });
+      this.hhtoken = await upgradeProxy(this.hhtokenold.address, MoverToken, { unsafeAllowCustomTypes: true });
+      await this.hhtoken.setTokenName("MOVE", "Mover");
     });
     
     it('initializes DOMAIN_SEPARATOR correctly', async function () {
       const chainId = await web3.eth.getChainId();
-      assert.equal(await this.hhtoken.DOMAIN_SEPARATOR(), getDomainSeparator("Holyheld", this.hhtoken.address, chainId))
+      assert.equal(await this.hhtoken.DOMAIN_SEPARATOR(), getDomainSeparator("Mover", this.hhtoken.address, chainId))
     });
 
     it("should set allowance after a permit transaction", async function () {

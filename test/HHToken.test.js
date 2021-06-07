@@ -4,7 +4,7 @@ const { expect } = require('chai');
 const web3 = require('web3');
 
 // Load compiled artifacts
-const HHToken = artifacts.require('HHToken');
+const HHToken = artifacts.require('HHTokenV2');
 
 contract('HHToken', function (accounts) {
   beforeEach(async function () {

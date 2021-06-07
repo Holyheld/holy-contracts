@@ -50,6 +50,11 @@ abstract contract EIP712Upgradeable is Initializable {
         _HASHED_VERSION = hashedVersion;
     }
 
+    function _EIP712SetNameHash(string memory name) internal {
+        bytes32 hashedName = keccak256(bytes(name));
+        _HASHED_NAME = hashedName;
+    }
+
     /**
      * @dev Returns the domain separator for the current chain.
      */
