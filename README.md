@@ -1,7 +1,7 @@
-![](https://cdn-images-1.medium.com/max/2400/1*LuM8yaXNMimFw03NKZb6KA.png)
+![](https://cdn-images-1.medium.com/max/1600/1*YBk2Kxe95-DI_5tZv0-YqQ.png)
 ## Mover — DeFi neobanking service.
 
-Mover makes the internet economy easy and available to everyone. The app abstracts blockchain complexity so that you can finally get great financial service with all DeFi benefits. You can earn highest and safest yield on your digital assets with our automatic portfolio management system. You can also send, receive and swap 3000+ digital assets on Ethereum.  
+Mover makes the internet economy easy and available to everyone. The app abstracts blockchain complexity so that you can finally get great financial service with all DeFi benefits. You can earn highest and safest yield on your digital assets with our automatic portfolio management system. You can also send, receive and swap 30000+ digital assets on Ethereum.
 
 
 ## New Deployed Contracts
@@ -24,6 +24,11 @@ These contracts are currently used in Mover V2.
 
 [HolyRedeemer](https://etherscan.io/address/0x496599b4dE503D5C5C11882501af64d04025c6Dd) - Yield harvesting and distributor contract.
 
+[SmartTreasury](https://etherscan.io/address/0x94f748bfd1483750a7df01acd993213ab64c960f) - mUSDC and Smart Treasury management contract.
+
+[UnexpectedMove](https://etherscan.io/address/0x0769747d4cac06bc2320e0bb1efb31d53fa0aaa1) - Unexpected Mover (MOVERNFT1) NFT contract.
+
+[SweetAndSour](https://etherscan.io/address/0x129b9083a9f02aed65e31644a8103d5aa2c73701) - Sweet And Sour (SAS) NFT contract.
 
 ## Previously Deployed Contracts
 
